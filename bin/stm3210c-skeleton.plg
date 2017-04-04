@@ -1,0 +1,194 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\philipp\Desktop\stm3210c-skeleton\stm3210c-skeleton.uvproj
+Project File Date:  06/09/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=18080 RO-data=284 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=18092 RO-data=284 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=18084 RO-data=284 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling stm32f10x_tim.c...
+Firmware\src\stm32f10x_tim.c(190): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(248): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(285): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(364): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(443): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(522): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(583): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(641): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(697): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(791): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(816): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(853): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(890): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(917): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(943): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(967): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(986): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1014): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1055): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1096): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1128): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1154): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1178): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1208): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1247): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1296): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1320): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1344): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1368): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1389): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1413): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1437): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1461): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1488): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1512): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1536): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1560): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1584): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1609): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1634): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1659): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1684): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1708): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1732): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1756): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1780): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1803): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1827): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1850): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1874): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1898): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1922): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1950): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(1980): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2022): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2066): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2094): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2118): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2144): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2176): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2199): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2220): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2238): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2252): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2266): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2280): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2294): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2308): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2327): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2349): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2371): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2393): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2414): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2430): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2443): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2456): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2469): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2482): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2495): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2526): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2565): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2595): warning:  #223-D: function "assert_param" declared implicitly
+Firmware\src\stm32f10x_tim.c(2633): warning:  #223-D: function "assert_param" declared implicitly
+compiling main.c...
+main.c(141): error:  #136: struct "<unnamed>" has no field "TIM_Channel"
+main.c(148): warning:  #223-D: function "TIM_OCInit" declared implicitly
+Target not created
+Build target 'Target 1'
+compiling stm32f10x_tim.c...
+compiling main.c...
+main.c(141): error:  #136: struct "<unnamed>" has no field "TIM_Channel"
+main.c(148): warning:  #223-D: function "TIM_OCInit" declared implicitly
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16724 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16732 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16724 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16724 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16716 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16724 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16748 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16732 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16696 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16712 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16708 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=16712 RO-data=268 RW-data=5552 ZI-data=58056  
+".\bin\stm3210c-skeleton.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\Documents and Settings\\philipp\\Desktop\\stm3210c-skeleton\\bin\\stm3210c-skeleton.AXF" 
+Clean started: Project: 'stm3210c-skeleton'
+   deleting intermediate output files for target 'Target 1'
