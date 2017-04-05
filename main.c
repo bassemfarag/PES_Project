@@ -30,7 +30,7 @@ static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sp
 	//char* sprite_path;
 	//sprintf(sprite_path, "SPRITE_", sprite);
 	GLCD_bitmap(pos_x*SPRITE_DIM, 
-							pos_y*SPRITE_DIM, 
+							SCREEN_WIDTH - pos_y*SPRITE_DIM, 
 							SPRITE_DIM, SPRITE_DIM, 
 							(unsigned char*) blob);
 }

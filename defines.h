@@ -12,4 +12,7 @@
 #define HOR						SCREEN_HEIGHT / SPRITE_DIM
 
 
-#include "Sprites/blob.h"
+#include "Sprites/blob2.h"
+
+
+
