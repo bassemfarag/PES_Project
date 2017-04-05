@@ -21,8 +21,17 @@
 /*-----------------------------------------------------------*/
 
 #define WIDTH 320
+int pos[VERT][HOR];
 
 xSemaphoreHandle lcdLock;
+
+
+static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sprite) {
+	GLCD_bitmap(pos_x*SPRITE_DIM, 
+							pos_y*SPRITE_DIM, 
+							SPRITE_DIM, SPRITE_DIM, 
+}
+
 
 static void initDisplay () {
   /* LCD Module init */
