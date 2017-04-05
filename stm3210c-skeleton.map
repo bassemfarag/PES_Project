@@ -335,12 +335,14 @@ Section Cross References
 Removing Unused input sections from the image.
 
     Removing stm32f10x.o(HEAP), (0 bytes).
+    Removing main.o(.bss), (1200 bytes).
+    Removing main.o(.constdata), (32 bytes).
     Removing dadd.o(.text), (334 bytes).
     Removing ddiv.o(.text), (222 bytes).
     Removing dfixul.o(.text), (48 bytes).
     Removing cdrcmple.o(.text), (48 bytes).
 
-5 unused section(s) (total 652 bytes) removed from the image.
+7 unused section(s) (total 1884 bytes) removed from the image.
 
 ==============================================================================
 
@@ -1026,16 +1028,16 @@ Memory Map of the image
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x08000000   0x000000ec   Data   RO            3    RESET               stm32f10x.o
-    0x080000ec   0x00000000   Code   RO          369  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x080000ec   0x00000004   Code   RO          647    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x080000f0   0x00000004   Code   RO          650    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x080000f4   0x00000000   Code   RO          652    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x080000f4   0x00000000   Code   RO          654    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x080000f4   0x00000008   Code   RO          655    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x080000fc   0x00000000   Code   RO          657    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x080000fc   0x00000000   Code   RO          659    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x080000fc   0x00000004   Code   RO          648    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
-    0x08000100   0x00000088   Code   RO          302    .emb_text           port.o
+    0x080000ec   0x00000000   Code   RO          372  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x080000ec   0x00000004   Code   RO          650    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x080000f0   0x00000004   Code   RO          653    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x080000f4   0x00000000   Code   RO          655    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x080000f4   0x00000000   Code   RO          657    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x080000f4   0x00000008   Code   RO          658    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x080000fc   0x00000000   Code   RO          660    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x080000fc   0x00000000   Code   RO          662    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x080000fc   0x00000004   Code   RO          651    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x08000100   0x00000088   Code   RO          305    .emb_text           port.o
     0x08000188   0x0000001c   Code   RO            4  * .text               stm32f10x.o
     0x080001a4   0x00000148   Code   RO           10    .text               system_stm32f10x_cl.o
     0x080002ec   0x00000288   Code   RO           39    .text               stm32f10x_gpio.o
@@ -1049,32 +1051,32 @@ Memory Map of the image
     0x0800289e   0x00000002   PAD
     0x080028a0   0x00000184   Code   RO          191    .text               setup.o
     0x08002a24   0x000004d4   Code   RO          214    .text               main.o
-    0x08002ef8   0x000000f8   Code   RO          269    .text               heap_2.o
-    0x08002ff0   0x0000008c   Code   RO          290    .text               list.o
-    0x0800307c   0x000000a0   Code   RO          303    .text               port.o
-    0x0800311c   0x00000478   Code   RO          323    .text               queue.o
-    0x08003594   0x000008a8   Code   RO          341    .text               tasks.o
-    0x08003e3c   0x00000024   Code   RO          372    .text               mc_w.l(memcpya.o)
-    0x08003e60   0x00000024   Code   RO          374    .text               mc_w.l(memseta.o)
-    0x08003e84   0x00000018   Code   RO          376    .text               mc_w.l(strncpy.o)
-    0x08003e9c   0x000000e4   Code   RO          641    .text               mf_w.l(dmul.o)
-    0x08003f80   0x00000022   Code   RO          643    .text               mf_w.l(dflti.o)
-    0x08003fa2   0x00000032   Code   RO          645    .text               mf_w.l(dfixui.o)
-    0x08003fd4   0x0000002c   Code   RO          662    .text               mc_w.l(uidiv.o)
-    0x08004000   0x00000020   Code   RO          666    .text               mc_w.l(llushr.o)
-    0x08004020   0x00000000   Code   RO          668    .text               mc_w.l(iusefp.o)
-    0x08004020   0x000000ba   Code   RO          669    .text               mf_w.l(depilogue.o)
+    0x08002ef8   0x000000f8   Code   RO          272    .text               heap_2.o
+    0x08002ff0   0x0000008c   Code   RO          293    .text               list.o
+    0x0800307c   0x000000a0   Code   RO          306    .text               port.o
+    0x0800311c   0x00000478   Code   RO          326    .text               queue.o
+    0x08003594   0x000008a8   Code   RO          344    .text               tasks.o
+    0x08003e3c   0x00000024   Code   RO          375    .text               mc_w.l(memcpya.o)
+    0x08003e60   0x00000024   Code   RO          377    .text               mc_w.l(memseta.o)
+    0x08003e84   0x00000018   Code   RO          379    .text               mc_w.l(strncpy.o)
+    0x08003e9c   0x000000e4   Code   RO          644    .text               mf_w.l(dmul.o)
+    0x08003f80   0x00000022   Code   RO          646    .text               mf_w.l(dflti.o)
+    0x08003fa2   0x00000032   Code   RO          648    .text               mf_w.l(dfixui.o)
+    0x08003fd4   0x0000002c   Code   RO          665    .text               mc_w.l(uidiv.o)
+    0x08004000   0x00000020   Code   RO          669    .text               mc_w.l(llushr.o)
+    0x08004020   0x00000000   Code   RO          671    .text               mc_w.l(iusefp.o)
+    0x08004020   0x000000ba   Code   RO          672    .text               mf_w.l(depilogue.o)
     0x080040da   0x00000002   PAD
-    0x080040dc   0x00000024   Code   RO          679    .text               mc_w.l(init.o)
-    0x08004100   0x0000001e   Code   RO          681    .text               mc_w.l(llshl.o)
-    0x0800411e   0x0000005e   Code   RO          693    .text               mc_w.l(__dclz77c.o)
-    0x0800417c   0x00000020   Code   RO          469    i.__0printf$3       mc_w.l(printf3.o)
-    0x0800419c   0x0000000e   Code   RO          687    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x080041aa   0x00000002   Code   RO          688    i.__scatterload_null  mc_w.l(handlers.o)
-    0x080041ac   0x0000000e   Code   RO          689    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x080040dc   0x00000024   Code   RO          682    .text               mc_w.l(init.o)
+    0x08004100   0x0000001e   Code   RO          684    .text               mc_w.l(llshl.o)
+    0x0800411e   0x0000005e   Code   RO          696    .text               mc_w.l(__dclz77c.o)
+    0x0800417c   0x00000020   Code   RO          472    i.__0printf$3       mc_w.l(printf3.o)
+    0x0800419c   0x0000000e   Code   RO          690    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x080041aa   0x00000002   Code   RO          691    i.__scatterload_null  mc_w.l(handlers.o)
+    0x080041ac   0x0000000e   Code   RO          692    i.__scatterload_zeroinit  mc_w.l(handlers.o)
     0x080041ba   0x00000002   PAD
-    0x080041bc   0x000001b8   Code   RO          476    i._printf_core      mc_w.l(printf3.o)
-    0x08004374   0x00000020   Data   RO          685    Region$$Table       anon$$obj.o
+    0x080041bc   0x000001b8   Code   RO          479    i._printf_core      mc_w.l(printf3.o)
+    0x08004374   0x00000020   Data   RO          688    Region$$Table       anon$$obj.o
 
 
     Execution Region ER_RW (Base: 0x20000000, Size: 0x000015b0, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x000007b4])
@@ -1086,20 +1088,20 @@ Memory Map of the image
     0x20000028   0x00000018   Data   RW           78    .data               stm3210c_eval_ioe.o
     0x20000040   0x00001506   Data   RW          156    .data               glcd.o
     0x20001546   0x00000002   PAD
-    0x20001548   0x00000010   Data   RW          216    .data               main.o
-    0x20001558   0x00000018   Data   RW          271    .data               heap_2.o
-    0x20001570   0x00000004   Data   RW          304    .data               port.o
-    0x20001574   0x00000038   Data   RW          343    .data               tasks.o
-    0x200015ac   0x00000004   Data   RW          661    .data               mc_w.l(stdout.o)
+    0x20001548   0x00000010   Data   RW          218    .data               main.o
+    0x20001558   0x00000018   Data   RW          274    .data               heap_2.o
+    0x20001570   0x00000004   Data   RW          307    .data               port.o
+    0x20001574   0x00000038   Data   RW          346    .data               tasks.o
+    0x200015ac   0x00000004   Data   RW          664    .data               mc_w.l(stdout.o)
 
 
     Execution Region ER_ZI (Base: 0x200015b0, Size: 0x0000e2c8, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x200015b0   0x00000400   Zero   RW          215    .bss                main.o
-    0x200019b0   0x0000dc00   Zero   RW          270    .bss                heap_2.o
-    0x2000f5b0   0x000000c8   Zero   RW          342    .bss                tasks.o
+    0x200015b0   0x00000400   Zero   RW          216    .bss                main.o
+    0x200019b0   0x0000dc00   Zero   RW          273    .bss                heap_2.o
+    0x2000f5b0   0x000000c8   Zero   RW          345    .bss                tasks.o
     0x2000f678   0x00000200   Zero   RW            1    STACK               stm32f10x.o
 
 
@@ -1113,7 +1115,7 @@ Image component sizes
       1416         70          0       5382          0       6570   glcd.o
        248         10          0         24      56320       5016   heap_2.o
        140          0          0          0          0       1857   list.o
-      1236        184          0         16       1024      30249   main.o
+      1236        184          0         16       1024      30622   main.o
        184         12          0          0          0       3709   misc.o
        296         24          0          4          0       2545   port.o
       1144          0          0          0          0       7735   queue.o
@@ -1129,7 +1131,7 @@ Image component sizes
       2216         40          0         56        200      13225   tasks.o
 
     ----------------------------------------------------------------------
-     15676        636        268       5548      58056     449333   Object Totals
+     15676        636        268       5548      58056     449706   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          2          0          0          2          0          0   (incl. Padding)
 
@@ -1183,8 +1185,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     17032        666        268       5552      58056     447953   Grand Totals
-     17032        666        268       1972      58056     447953   ELF Image Totals (compressed)
+     17032        666        268       5552      58056     448326   Grand Totals
+     17032        666        268       1972      58056     448326   ELF Image Totals (compressed)
      17032        666        268       1972          0          0   ROM Totals
 
 ==============================================================================
