@@ -296,7 +296,7 @@ int main( void )
   printf("Setup complete ");  // this is redirected to the display
   print_sprite(10,10,0);
   vTaskStartScheduler();
-  
+
   assert(0);
   return 0;                 // not reachable
 }
