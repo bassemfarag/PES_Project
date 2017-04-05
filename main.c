@@ -294,9 +294,11 @@ int main( void )
   xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
   
   printf("Setup complete ");  // this is redirected to the display
-  print_sprite(10,10,0);
+ // print_sprite(10,10,0);
   vTaskStartScheduler();
-
+	for(;;){
+  GLCD_putPixel(10,10);
+	}
   assert(0);
   return 0;                 // not reachable
 }
