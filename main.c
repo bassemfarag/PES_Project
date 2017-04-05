@@ -292,9 +292,9 @@ int main( void )
   xTaskCreate(ledTask, "led", 100, NULL, 1, NULL);
   xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
-
+  
   printf("Setup complete ");  // this is redirected to the display
-
+  print_sprite(10,10,0);
   vTaskStartScheduler();
 
   assert(0);
