@@ -23,8 +23,8 @@
 #define WIDTH 320
 int pos[VERT][HOR];
 
+int* cords;
 xSemaphoreHandle lcdLock;
-
 
 static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sprite) {
 	//char* sprite_path;
@@ -49,7 +49,7 @@ static void initDisplay () {
   GLCD_displayStringLn(Line4, " Systems");
 }
 
-static void lcdTask(void *params) {
+/*static void lcdTask(void *params) {
   unsigned short col1 = Blue, col2 = Red, col3 = Green;
   unsigned short t;
 
@@ -65,7 +65,7 @@ static void lcdTask(void *params) {
 	t = col1; col1 = col2; col2 = col3; col3 = t;
     vTaskDelay(300 / portTICK_RATE_MS);
   }
-}
+}*/
 
 /*-----------------------------------------------------------*/
 
@@ -160,7 +160,7 @@ static void ledTask(void *params) {
   TIM_Cmd(TIM2, ENABLE);
 
   for (;;) {
-    printf("%d ", TIM_GetCounter(TIM2));
+//    printf("%d ", TIM_GetCounter(TIM2));
 
     vTaskDelay(500 / portTICK_RATE_MS);
   }
@@ -198,7 +198,7 @@ void registerTSCallback(u16 left, u16 right, u16 lower, u16 upper,
   callbackNum++;
 }
 
-static void touchScreenTask(void *params) {
+/*static void touchScreenTask(void *params) {
   portTickType lastWakeTime = xTaskGetTickCount();
   TS_STATE *ts_state;
   u8 pressed = 0;
@@ -229,6 +229,7 @@ static void touchScreenTask(void *params) {
 	vTaskDelayUntil(&lastWakeTime, 100 / portTICK_RATE_MS);
   }
 }
+*/
 
 /*-----------------------------------------------------------*/
 
@@ -250,7 +251,7 @@ static void setupButtons(void) {
   }
 }
 
-static void highlightButtonsTask(void *params) {
+/*static void highlightButtonsTask(void *params) {
   u16 d;
 
   for (;;) {
@@ -272,6 +273,48 @@ static void highlightButtonsTask(void *params) {
   }
 }
 
+
+*/
+
+/*------------------------------------------------------------------------*/
+/* Pixel coloring Function.*/
+ void pixel_coloring(void *params){
+		int i,j;
+	 GLCD_setTextColor(Black);
+	  for(;;){
+			/*Colour*/
+		for(j=0; j<17;j++){
+			for(i=0;i<17;i++){
+				GLCD_putPixel((int)params -i,(int)params -j);
+			}
+		}
+		/*Colour*/
+		for(j=17; j<34;j++){
+			for(i=0;i<17;i++){
+				GLCD_putPixel((int)params -i,(int)params -j);
+			}
+		}
+		vTaskDelay(100 / portTICK_RATE_MS);
+		GLCD_setTextColor(White);
+		for(j=0; j<17;j++){
+			for(i=0;i<17;i++){
+				GLCD_putPixel((int)params -i,(int)params -j);
+			}
+		}
+	//	GLCD_setTextColor(White);
+		for(j=17; j<34;j++){
+			for(i=0;i<17;i++){
+				GLCD_putPixel((int)params -i,(int)params -j);
+			}
+		}
+								vTaskDelay(100 / portTICK_RATE_MS);
+
+				//vTaskDelay(200 / portTICK_RATE_MS);
+
+	}
+}
+
+/*------------------------------------------------------------------------*/
 /*-----------------------------------------------------------*/
 
 /*
@@ -279,6 +322,9 @@ static void highlightButtonsTask(void *params) {
  */
 int main( void )
 {
+  
+//	 cords_point->x = 100;
+//	cords_point->y = 100;
   prvSetupHardware();
   IOE_Config();
 
@@ -286,19 +332,17 @@ int main( void )
 
   initDisplay();
   setupButtons();
-
-  xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
+  //xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(ledTask, "led", 100, NULL, 1, NULL);
-  xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
-  xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
-  
-  printf("Setup complete ");  // this is redirected to the display
- // print_sprite(10,10,0);
+//xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
+//  xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
+  xTaskCreate(pixel_coloring, "coloring", 100, (void*) 100, 1, NULL);
+ //	printf("Setup complete ");  // this is redirected to the display
+//	pixel_coloring(100,100);
+
+//  print_sprite(10,10,0);
   vTaskStartScheduler();
-	for(;;){
-  GLCD_putPixel(10,10);
-	}
   assert(0);
   return 0;                 // not reachable
 }
