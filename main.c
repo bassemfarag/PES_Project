@@ -288,26 +288,23 @@ static void setupButtons(void) {
 				GLCD_putPixel((int)params -i,(int)params -j);
 			}
 		}
+//vTaskDelay(200 / portTICK_RATE_MS);
+
 		/*Colour*/
 		for(j=17; j<34;j++){
 			for(i=0;i<17;i++){
 				GLCD_putPixel((int)params -i,(int)params -j);
 			}
 		}
-		vTaskDelay(100 / portTICK_RATE_MS);
 		GLCD_setTextColor(White);
-		for(j=0; j<17;j++){
-			for(i=0;i<17;i++){
-				GLCD_putPixel((int)params -i,(int)params -j);
-			}
-		}
-	//	GLCD_setTextColor(White);
+		vTaskDelay(200 / portTICK_RATE_MS);
+			/*Colour*/
 		for(j=17; j<34;j++){
 			for(i=0;i<17;i++){
 				GLCD_putPixel((int)params -i,(int)params -j);
 			}
 		}
-								vTaskDelay(100 / portTICK_RATE_MS);
+		vTaskDelay(200 / portTICK_RATE_MS);
 
 				//vTaskDelay(200 / portTICK_RATE_MS);
 
