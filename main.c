@@ -278,38 +278,35 @@ static void setupButtons(void) {
 
 /*------------------------------------------------------------------------*/
 /* Pixel coloring Function.*/
- void pixel_coloring(void *params){
-		int i,j;
-		GLCD_setTextColor(Black);
-		for(;;){
-			/*Colour*/
-			for(j=0; j<16;j++){
-				for(i=0;i<16;i++){
-					GLCD_putPixel( i, j);
-				}
+void pixel_coloring(void *params){
+	int i,j,x,y,w,colour;
+	w = 2;
+	x = 0;
+	y = 0;
+	colour = Black;
+	
+	while (1){
+		GLCD_setTextColor(colour);
+		/*
+		for(j=0; j<w;j++){
+			for(i=0;i<w;i++){
+				GLCD_putPixel( i-(y*w), 320-j-(x*w));
 			}
-			//vTaskDelay(200 / portTICK_RATE_MS);
-
-			/*Colour*/
-			GLCD_setTextColor(DarkGrey);
-			for(j=16; j<32;j++){
-				for(i=0;i<16;i++){
-					GLCD_putPixel(i, j);
-				}
-			}
-			GLCD_setTextColor(Cyan);
-			vTaskDelay(200 / portTICK_RATE_MS);
-				/*Colour*/
-			for(j=32; j<48;j++){
-				for(i=0;i<16;i++){
-					GLCD_putPixel(i, j);
-				}
-			}
-			vTaskDelay(200 / portTICK_RATE_MS);
-
-					//vTaskDelay(200 / portTICK_RATE_MS);
 		}
+		*/
+		GLCD_putPixel(y, 320-x);
+		x++;
+		if (x=>320) {
+			x = 0;
+			y++;
+		}
+		
+		colour ++;
+
+		vTaskDelay(200 / portTICK_RATE_MS);
+	}
 }
+
 
 /*------------------------------------------------------------------------*/
 /*-----------------------------------------------------------*/
