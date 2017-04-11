@@ -13,28 +13,12 @@
 #include "assert.h"
 #include "GLCD.h"
 #include "stm3210c_eval_ioe.h"
-#include "stm32f10x_gpio.h"
-#include "stm32f10x_tim.h"
-#include "stm32f10x_rcc.h"
-#include "defines.h"
 
 /*-----------------------------------------------------------*/
 
 #define WIDTH 320
-int pos[VERT][HOR];
 
-int* cords;
 xSemaphoreHandle lcdLock;
-
-static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sprite) {
-	//char* sprite_path;
-	//sprintf(sprite_path, "SPRITE_", sprite);
-	GLCD_bitmap(SCREEN_WIDTH - pos_x*SPRITE_DIM, 
-							pos_y*SPRITE_DIM, 
-							SPRITE_DIM, SPRITE_DIM, 
-							(unsigned char*) blob);
-}
-
 
 static void initDisplay () {
   /* LCD Module init */
@@ -49,7 +33,7 @@ static void initDisplay () {
   GLCD_displayStringLn(Line4, " Systems");
 }
 
-/*static void lcdTask(void *params) {
+static void lcdTask(void *params) {
   unsigned short col1 = Blue, col2 = Red, col3 = Green;
   unsigned short t;
 
@@ -65,7 +49,7 @@ static void initDisplay () {
 	t = col1; col1 = col2; col2 = col3; col3 = t;
     vTaskDelay(300 / portTICK_RATE_MS);
   }
-}*/
+}
 
 /*-----------------------------------------------------------*/
 
@@ -110,59 +94,14 @@ int fputc(int ch, FILE *f) {
  */
 
 static void ledTask(void *params) {
-/*  GPIO_InitTypeDef GPIO_InitStructure;
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init( GPIOB, &GPIO_InitStructure );
+  const u8 led_val[8] = { 0x01,0x08,0x04,0x02};
+  int cnt = 0;
 
   for (;;) {
-    GPIO_SetBits(GPIOB, GPIO_Pin_11);
-    vTaskDelay(1000 / portTICK_RATE_MS);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_11);
-    vTaskDelay(1000 / portTICK_RATE_MS);
-  } */
-
-  GPIO_InitTypeDef GPIO_InitStructure;
-  TIM_TimeBaseInitTypeDef timInit;
-  TIM_OCInitTypeDef TIM_OCInitStruct;
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	        // IMPORTANT to use AF!
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init( GPIOB, &GPIO_InitStructure );
-
-  /* Setup timer TIM3 for pulse-width modulation:
-     100kHz, periodically counting from 0 to 9999 */
-  RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2, ENABLE );
-
-  GPIO_PinRemapConfig(GPIO_FullRemap_TIM2, ENABLE);	        // Remap channel 3 to PB10
-
-  TIM_DeInit( TIM2 );
-  TIM_TimeBaseStructInit( &timInit );
-
-  timInit.TIM_Period = (unsigned portSHORT)9999;
-  timInit.TIM_Prescaler = 20000;
-  timInit.TIM_CounterMode = TIM_CounterMode_Up;
-    
-  TIM_TimeBaseInit( TIM2, &timInit );
-  TIM_ARRPreloadConfig( TIM2, ENABLE );
-
-  TIM_OCStructInit(&TIM_OCInitStruct);
-  TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1;
-  TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStruct.TIM_OutputNState = TIM_OutputState_Disable;
-  TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High;
-  TIM_OCInitStruct.TIM_Pulse = 3000;
-  TIM_OC3Init(TIM2, &TIM_OCInitStruct);			 // PB10
-
-  TIM_Cmd(TIM2, ENABLE);
-
-  for (;;) {
-//    printf("%d ", TIM_GetCounter(TIM2));
-
-    vTaskDelay(500 / portTICK_RATE_MS);
+      LED_out (led_val[cnt]);
+	//	LED_out(cnt);
+    cnt = (cnt + 1) % sizeof(led_val);
+    vTaskDelay(100 / portTICK_RATE_MS);
   }
 }
 
@@ -198,7 +137,7 @@ void registerTSCallback(u16 left, u16 right, u16 lower, u16 upper,
   callbackNum++;
 }
 
-/*static void touchScreenTask(void *params) {
+static void touchScreenTask(void *params) {
   portTickType lastWakeTime = xTaskGetTickCount();
   TS_STATE *ts_state;
   u8 pressed = 0;
@@ -229,7 +168,6 @@ void registerTSCallback(u16 left, u16 right, u16 lower, u16 upper,
 	vTaskDelayUntil(&lastWakeTime, 100 / portTICK_RATE_MS);
   }
 }
-*/
 
 /*-----------------------------------------------------------*/
 
@@ -251,7 +189,7 @@ static void setupButtons(void) {
   }
 }
 
-/*static void highlightButtonsTask(void *params) {
+static void highlightButtonsTask(void *params) {
   u16 d;
 
   for (;;) {
@@ -273,48 +211,6 @@ static void setupButtons(void) {
   }
 }
 
-
-*/
-
-/*------------------------------------------------------------------------*/
-/* Pixel coloring Function.*/
-void pixel_coloring(void *params){
-	int i,j,x,y,w,colour;
-	w = 2;
-	x = 0;
-	y = 0;
-	colour = Black;
-	
-	while (1){
-		GLCD_setTextColor(colour);
-		/*
-		for(j=0; j<w;j++){
-			for(i=0;i<w;i++){
-				GLCD_putPixel( i-(y*w), 320-j-(x*w));
-			}
-		}
-		*/
-		GLCD_putPixel(y, 320-x);
-		x++;
-		if (x >=320) {
-			x = 0;
-			y++;
-		}
-		if (y >=240) {
-			y = 0;
-		}
-		
-		colour ++;
-		
-		if (colour == 0xFFFF)
-			colour = 0x0;
-		
-		//vTaskDelay(1 / portTICK_RATE_MS);
-	}
-}
-
-
-/*------------------------------------------------------------------------*/
 /*-----------------------------------------------------------*/
 
 /*
@@ -322,9 +218,6 @@ void pixel_coloring(void *params){
  */
 int main( void )
 {
-  
-//	 cords_point->x = 100;
-//	cords_point->y = 100;
   prvSetupHardware();
   IOE_Config();
 
@@ -332,17 +225,17 @@ int main( void )
 
   initDisplay();
   setupButtons();
-  //xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
+
+  xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(ledTask, "led", 100, NULL, 1, NULL);
-//xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
-//  xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
-  xTaskCreate(pixel_coloring, "coloring", 100, (void*) 100, 1, NULL);
- //	printf("Setup complete ");  // this is redirected to the display
-//	pixel_coloring(100,100);
+  xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
+  xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
-//  print_sprite(10,10,0);
+  printf("Setup complete ");  // this is redirected to the display
+
   vTaskStartScheduler();
+
   assert(0);
   return 0;                 // not reachable
 }

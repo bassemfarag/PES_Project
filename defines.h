@@ -1,4 +1,4 @@
-//Values for Sprites
+//Val,ues for Sprites
 #define EMPTY 		0
 #define APPLE 		1
 #define HEAD			2

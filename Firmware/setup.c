@@ -74,9 +74,9 @@ void LED_out (u32 val) {
   u32 rv;
 
   rv = 0;
-  if (val & 0x01) rv |= 0x00004000;
-  GPIOE->BSRR = rv;
-  GPIOE->BRR  = rv ^ 0x00004000;
+  if (val & 0x01) rv |= 0x00000080;
+    GPIOD->BSRR = rv;
+    GPIOD->BRR  = rv ^ 0x00000080;
 
   rv = 0;
   if (val & 0x02) rv |= 0x00002000;	// bit 13
