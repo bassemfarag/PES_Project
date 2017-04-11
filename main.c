@@ -296,13 +296,16 @@ void pixel_coloring(void *params){
 		*/
 		GLCD_putPixel(y, 320-x);
 		x++;
-		if (x=>320) {
+		if (x>=320) {
 			x = 0;
 			y++;
 		}
 		
 		colour ++;
-
+		
+		if (colour == 0xFFFF)
+			break;
+		
 		vTaskDelay(200 / portTICK_RATE_MS);
 	}
 }
