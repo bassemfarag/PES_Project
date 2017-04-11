@@ -17,8 +17,8 @@ void prvSetupHardware( void )
   RCC->APB2ENR |= 0x00000261;
 
   /* Configure the GPIO for LEDs. */
-  GPIOD->CRL &= 0xFFF00FFF;
-  GPIOD->CRL |= 0x00033000;
+  GPIOD->CRL &= 0x0FF00FFF;
+  GPIOD->CRL |= 0x30033000;
   GPIOD->CRH &= 0xFF0FFFFF;
   GPIOD->CRH |= 0x00300000;
   GPIOE->CRH &= 0xF0FFFFFF;
@@ -74,14 +74,10 @@ void LED_out (u32 val) {
   u32 rv;
 
   rv = 0;
-  if (val & 0x01) rv |= 0x00000080;
-    GPIOD->BSRR = rv;
-    GPIOD->BRR  = rv ^ 0x00000080;
-
-  rv = 0;
-  if (val & 0x02) rv |= 0x00002000;	// bit 13
-  if (val & 0x04) rv |= 0x00000008;	// bit 3
-  if (val & 0x08) rv |= 0x00000010;	// bit 4
+  if (val & 0x01) rv |= 1<<7;
+  if (val & 0x02) rv |= 1<<13;	// bit 13
+  if (val & 0x04) rv |= 1<<3;	// bit 3
+  if (val & 0x08) rv |= 1<<4;	// bit 4
   GPIOD->BSRR = rv;
   GPIOD->BRR  = rv ^ 0x0002098;
 }

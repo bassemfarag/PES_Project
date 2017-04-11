@@ -94,12 +94,11 @@ int fputc(int ch, FILE *f) {
  */
 
 static void ledTask(void *params) {
-  const u8 led_val[8] = { 0x01,0x08,0x04,0x02};
+  const u8 led_val[4] = { 0x01,0x02,0x04,0x08};
   int cnt = 0;
 
   for (;;) {
-      LED_out (led_val[cnt]);
-	//	LED_out(cnt);
+    LED_out (led_val[cnt]);
     cnt = (cnt + 1) % sizeof(led_val);
     vTaskDelay(100 / portTICK_RATE_MS);
   }
