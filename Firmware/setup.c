@@ -72,13 +72,14 @@ void prvSetupHardware( void )
  */
 void LED_out (u32 val) {
   u32 rv;
-
   rv = 0;
-  if (val & 0x01) rv |= 1<<7;
+	if (val & 0x01) rv |= 1<<7;
   if (val & 0x02) rv |= 1<<13;	// bit 13
   if (val & 0x04) rv |= 1<<3;	// bit 3
   if (val & 0x08) rv |= 1<<4;	// bit 4
-  GPIOD->BSRR = rv;
+	if (val & 0x10) rv |= 1<<4;	
+  if (val & 0x10) rv |= 1<<3;    
+	GPIOD->BSRR = rv;
   GPIOD->BRR  = rv ^ 0x0002098;
 }
 

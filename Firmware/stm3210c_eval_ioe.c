@@ -36,7 +36,10 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_exti.h"
+#include "FreeRTOS.h"
 #include "misc.h"
+
+#include "task.h"
 
 
 /** @addtogroup Utilities
@@ -361,7 +364,7 @@ JOY_State_TypeDef IOE_JoyStickGetState(void)
   uint8_t tmp = 0;
   /* Read the status of all pins */
   tmp = (uint32_t)I2C_ReadDeviceRegister(IOE_2_ADDR, IOE_REG_GPIO_MP_STA);
-   
+  vTaskDelay(200 / portTICK_RATE_MS);
   /* Check the pressed keys */
   if ((tmp & JOY_IO_NONE) == JOY_IO_NONE)
   {

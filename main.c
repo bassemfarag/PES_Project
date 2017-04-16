@@ -13,12 +13,25 @@
 #include "assert.h"
 #include "GLCD.h"
 #include "stm3210c_eval_ioe.h"
+#include <defines.h>
 
 /*-----------------------------------------------------------*/
 
 #define WIDTH 320
 
+volatile int dir_v = 0;
+volatile int dir_h = 0;
+
 xSemaphoreHandle lcdLock;
+
+static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sprite) {
+	//char* sprite_path;
+	//sprintf(sprite_path, "SPRITE_", sprite);
+	GLCD_bitmap(SCREEN_WIDTH - pos_x*SPRITE_DIM, 
+							pos_y*SPRITE_DIM, 
+							SPRITE_DIM, SPRITE_DIM, 
+							(unsigned char*) blob);
+}
 
 static void initDisplay () {
   /* LCD Module init */
@@ -58,6 +71,9 @@ static void lcdTask(void *params) {
  */
 
 xQueueHandle printQueue;
+
+
+
 
 static void printTask(void *params) {
   unsigned char str[21] = "                    ";
@@ -103,6 +119,28 @@ static void ledTask(void *params) {
     vTaskDelay(100 / portTICK_RATE_MS);
   }
 }
+
+static void ledOn(int led) {
+	LED_out(led);
+	/*switch (led) {
+		case 1:
+			LED_out(0x01);
+			break;
+		case 2:
+			LED_out(0x02);
+			break;
+		case 3:
+			LED_out(0x04);
+			break;
+		case 4:
+			LED_out(0x08);
+			break;
+		default:
+			LED_out(0x00);
+			break;
+	}*/
+}
+
 
 /*-----------------------------------------------------------*/
 
@@ -209,6 +247,49 @@ static void highlightButtonsTask(void *params) {
     xSemaphoreGive(lcdLock);
   }
 }
+/*-----------------------------------------------------------*/
+
+void Joy_stick(void *params){
+	
+	volatile JOY_State_TypeDef state;
+	
+	for(;;){
+	 state = JOY_NONE;
+	//state =  IOE_JoyStickGetState();
+	state =  IOE_JoyStickGetState();
+	ledOn(0);
+	switch (state) {
+		case JOY_NONE:	
+			break;
+		case JOY_UP:
+			ledOn(8);	
+			//LED_out (0x08);
+			break;
+		case JOY_LEFT:
+			ledOn(1);	
+			//LED_out (0x01);
+			break;
+		case JOY_RIGHT:
+			ledOn(2);	
+			//LED_out (0x02);
+			break;
+		case JOY_CENTER:
+			print_sprite(10, 10, 0);
+		//ledOn(1);	
+			LED_out (0x0F);
+			break;
+		case JOY_DOWN:
+			ledOn(4);	
+			//LED_out (0x02);
+			break;
+
+		default:
+			break;	
+	}
+	vTaskDelay(10 / portTICK_RATE_MS);
+}
+}
+
 
 /*-----------------------------------------------------------*/
 
@@ -221,13 +302,13 @@ int main( void )
   IOE_Config();
 
   printQueue = xQueueCreate(128, 1);
-
+//	Joy_stick();
   initDisplay();
   setupButtons();
 
   xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
-  xTaskCreate(ledTask, "led", 100, NULL, 1, NULL);
+  xTaskCreate(Joy_stick, "led", 100, NULL, 1, NULL);
   xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 

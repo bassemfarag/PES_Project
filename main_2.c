@@ -29,10 +29,11 @@ xSemaphoreHandle lcdLock;
 static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sprite) {
 	//char* sprite_path;
 	//sprintf(sprite_path, "SPRITE_", sprite);
-	GLCD_bitmap(SCREEN_WIDTH - pos_x*SPRITE_DIM, 
-							pos_y*SPRITE_DIM, 
-							SPRITE_DIM, SPRITE_DIM, 
-							(unsigned char*) blob);
+	GLCD_bitmap(SCREEN_WIDTH - pos_x*SPRITE_DIM,
+							pos_y*SPRITE_DIM,
+							SPRITE_DIM, SPRITE_DIM,
+							(unsigned c
+        har*) blob);
 }
 
 
@@ -145,7 +146,7 @@ static void ledTask(void *params) {
   timInit.TIM_Period = (unsigned portSHORT)9999;
   timInit.TIM_Prescaler = 20000;
   timInit.TIM_CounterMode = TIM_CounterMode_Up;
-    
+
   TIM_TimeBaseInit( TIM2, &timInit );
   TIM_ARRPreloadConfig( TIM2, ENABLE );
 
@@ -218,7 +219,7 @@ void registerTSCallback(u16 left, u16 right, u16 lower, u16 upper,
 		    callbacks[i].upper <= ts_state->Y)
 		  callbacks[i].callback(ts_state->X, ts_state->Y, ts_state->Z,
 		                        callbacks[i].data);
-	  }													
+	  }
 	  pressed = 1;
 	}
 
@@ -243,7 +244,7 @@ static void highlightButton(u16 x, u16 y, u16 pressure, void *data) {
 static void setupButtons(void) {
   u16 i;
   buttonQueue = xQueueCreate(4, sizeof(u16));
-  
+
   for (i = 0; i < 3; ++i) {
     GLCD_drawRect(30 + 60*i, 30, 40, 40);
 	registerTSCallback(WIDTH - 30 - 40, WIDTH - 30, 30 + 60*i + 40, 30 + 60*i,
@@ -284,7 +285,7 @@ void pixel_coloring(void *params){
 	x = 0;
 	y = 0;
 	colour = Black;
-	
+
 	while (1){
 		GLCD_setTextColor(colour);
 		/*
@@ -303,12 +304,12 @@ void pixel_coloring(void *params){
 		if (y >=240) {
 			y = 0;
 		}
-		
+
 		colour ++;
-		
+
 		if (colour == 0xFFFF)
 			colour = 0x0;
-		
+
 		//vTaskDelay(1 / portTICK_RATE_MS);
 	}
 }
@@ -322,7 +323,7 @@ void pixel_coloring(void *params){
  */
 int main( void )
 {
-  
+
 //	 cords_point->x = 100;
 //	cords_point->y = 100;
   prvSetupHardware();

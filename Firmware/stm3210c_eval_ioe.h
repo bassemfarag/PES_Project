@@ -77,7 +77,8 @@ typedef enum
   JOY_DOWN = 2,
   JOY_LEFT = 3,
   JOY_RIGHT = 4,
-  JOY_UP = 5
+  JOY_UP = 5,
+	stateless = 6,
 } JOY_State_TypeDef;
 #endif /* __STM32_EVAL_H */
  
