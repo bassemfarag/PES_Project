@@ -18,43 +18,174 @@
 
 /*-----------------------------------------------------------*/
 
-#define WIDTH 320
+volatile int dir_y = 0;
+volatile int dir_x = 0;
+volatile int length = 3;
+volatile int status = INIT;
 
-volatile int dir_v = 0;
-volatile int dir_h = 0;
+volatile int WAIT = 30;
+const int timeStep = 10;
+
+//Board Definition
+typedef struct BoardPositionType{
+  int x, y;
+  char content;
+  struct BoardPositionType* headward; //Towards Head;
+  struct BoardPositionType* tailward; //Towards Tail;
+} BoardPosition;
+
+char content[MAX_X][MAX_Y];
+int X[MAX_X][MAX_Y];
+int prevY[MAX_X][MAX_Y];
+int nextX[MAX_X][MAX_Y];
+int nextY[MAX_X][MAX_Y];
+
+BoardPosition board[MAX_X][MAX_Y];
+BoardPosition* head;
+BoardPosition* tail;
+BoardPosition* apple;
 
 xSemaphoreHandle lcdLock;
 
+//X and Y refers to columns and rows, not pixel.
+extern void printCharXY(int x, int y, char c){
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+	GLCD_displayChar(y * 24, SCREEN_WIDTH - (16 * (x+1)), c);
+	xSemaphoreGive(lcdLock);
+}
+
+
+void updateScreen(BoardPosition* pos){
+	printCharXY(pos->x, pos->y, pos->content);  
+}
+
+
+void up(){
+  dir_y = 1;
+  dir_x = 0;
+}
+
+void down(){
+  dir_y = -1;
+  dir_x = 0;
+}
+
+void left(){
+  dir_y = 0;
+  dir_x = -1;
+}
+
+void right(){
+  dir_y = 0;
+  dir_x = 1;
+}
+
+void exitGame(int stat) {
+  
+  printf("%03d: ", stat);
+  switch (stat) {
+    case ERROR :
+      printf("Some fatal error occurred");
+      break;
+     
+    case WIN :
+      printf("Congratulations! You won!");
+      break;
+     
+    case GAME_OVER :
+      printf("Uh oh! Game Over!");
+      break;
+      
+    case COMPLETE :
+      printf("End of program.");
+      break;
+    }
+  
+  //exit(stat);
+  return;
+}
+
+static void ledOn(int led) {
+	LED_out(led);
+}
+
+
+
+
+void clearScreen() {
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+	GLCD_clear(White);
+	GLCD_setTextColor(Black);
+	xSemaphoreGive(lcdLock);
+}
+
+
 static void initDisplay () {
   /* LCD Module init */
-
   lcdLock = xSemaphoreCreateMutex();
-
   GLCD_init();
-  GLCD_clear(White);
-  GLCD_setTextColor(Blue);
-  GLCD_displayStringLn(Line2, " Programming");
-  GLCD_displayStringLn(Line3, " Embedded");
-  GLCD_displayStringLn(Line4, " Systems");
+	clearScreen();
 }
 
-static void lcdTask(void *params) {
-  unsigned short col1 = Blue, col2 = Red, col3 = Green;
-  unsigned short t;
+static void ledTask(void *params) {
+  unsigned short t = 0;
 
   for (;;) {
-    xSemaphoreTake(lcdLock, portMAX_DELAY);
-    GLCD_setTextColor(col1);
-    GLCD_displayChar(Line7, WIDTH - 40, '1');
-    GLCD_setTextColor(col2);
-    GLCD_displayChar(Line7, WIDTH - 60, '2');
-    GLCD_setTextColor(col3);
-    GLCD_displayChar(Line7, WIDTH - 80, '3');
-    xSemaphoreGive(lcdLock);
-	t = col1; col1 = col2; col2 = col3; col3 = t;
-    vTaskDelay(300 / portTICK_RATE_MS);
+		ledOn(1<<t);
+		t = (t+1)%4;
+	  vTaskDelay(300 / portTICK_RATE_MS);
   }
 }
+
+
+void printSnake() {
+  BoardPosition* pos = head;
+
+  printf("%d: ", length);
+  while (pos != NULL) {
+    updateScreen(pos);
+    pos = pos->tailward;
+  }
+
+  //printf("\r\n");
+  return;
+}
+void printBoard(){
+  int i = 0,j = 0;
+  //char out[MAX_Y*2];
+  //char temp[4];
+
+  //printSnake();
+  clearScreen();
+	exitGame(__LINE__);
+	
+  for (i=0;i<MAX_Y;i++){
+    for (j=0;j<MAX_X;j++){
+			//printCharXY(j,i, board[j][i].content);
+      printCharXY(j,i, TAIL);
+    };
+ };
+}
+
+void initiate() {
+  int i,j;
+	BoardPosition* pos;
+  for (i=0;i<MAX_Y;i++) {
+    for (j=0;j<MAX_X;j++){
+			pos = &board[j][i];
+			//pos->x = 5;
+			//pos->y = i;*/
+      /*board[j][i].x = j;
+      board[j][i].y = i;
+      board[j][i].content = EMPTY;
+      board[j][i].headward = NULL;
+      board[j][i].tailward = NULL;*/
+    }
+  }
+	
+	exitGame(__LINE__);
+}
+
 
 /*-----------------------------------------------------------*/
 
@@ -63,9 +194,6 @@ static void lcdTask(void *params) {
  */
 
 xQueueHandle printQueue;
-
-
-
 
 static void printTask(void *params) {
   unsigned char str[21] = "                    ";
@@ -95,185 +223,19 @@ int fputc(int ch, FILE *f) {
   return ch;
 }
 
-/*-----------------------------------------------------------*/
-
-/**
- * Blink the LEDs to show that we are alive
- */
-
-static void ledTask(void *params) {
-  const u8 led_val[4] = { 0x01,0x02,0x04,0x08};
-  int cnt = 0;
-
-  for (;;) {
-    LED_out (led_val[cnt]);
-    cnt = (cnt + 1) % sizeof(led_val);
-    vTaskDelay(100 / portTICK_RATE_MS);
-  }
-}
-
-static void ledOn(int led) {
-	LED_out(led);
-	/*switch (led) {
-		case 1:
-			LED_out(0x01);
-			break;
-		case 2:
-			LED_out(0x02);
-			break;
-		case 3:
-			LED_out(0x04);
-			break;
-		case 4:
-			LED_out(0x08);
-			break;
-		default:
-			LED_out(0x00);
-			break;
-	}*/
-}
-
 
 /*-----------------------------------------------------------*/
 
-/**
- * Register a callback that will be invoked when a touch screen
- * event occurs within a given rectangle
- *
- * NB: the callback function should have a short execution time,
- * since long-running callbacks will prevent further events from
- * being generated
- */
-
-typedef struct {
-  u16 lower, upper, left, right;
-  void *data;
-  void (*callback)(u16 x, u16 y, u16 pressure, void *data);
-} TSCallback;
-
-static TSCallback callbacks[64];
-static u8 callbackNum = 0;
-
-void registerTSCallback(u16 left, u16 right, u16 lower, u16 upper,
-                        void (*callback)(u16 x, u16 y, u16 pressure, void *data),
-						void *data) {
-  callbacks[callbackNum].lower    = lower;
-  callbacks[callbackNum].upper    = upper;
-  callbacks[callbackNum].left     = left;
-  callbacks[callbackNum].right    = right;
-  callbacks[callbackNum].callback = callback;
-  callbacks[callbackNum].data     = data;
-  callbackNum++;
-}
-
-static void touchScreenTask(void *params) {
-  portTickType lastWakeTime = xTaskGetTickCount();
-  TS_STATE *ts_state;
-  u8 pressed = 0;
-  u8 i;
-
-  for (;;) {
-    ts_state = IOE_TS_GetState();
-
-	if (pressed) {
-	  if (!ts_state->TouchDetected)
-	    pressed = 0;
-	} else if (ts_state->TouchDetected) {
-	  for (i = 0; i < callbackNum; ++i) {
-		if (callbacks[i].left  <= ts_state->X &&
-		    callbacks[i].right >= ts_state->X &&
-		    callbacks[i].lower >= ts_state->Y &&
-		    callbacks[i].upper <= ts_state->Y)
-		  callbacks[i].callback(ts_state->X, ts_state->Y, ts_state->Z,
-		                        callbacks[i].data);
-	  }													
-	  pressed = 1;
-	}
-
-    if (ts_state->TouchDetected) {
-	  printf("%d,%d,%d ", ts_state->X, ts_state->Y, ts_state->Z);
-	}
-
-	vTaskDelayUntil(&lastWakeTime, 100 / portTICK_RATE_MS);
-  }
-}
-
 /*-----------------------------------------------------------*/
 
-xQueueHandle buttonQueue;
-
-static void highlightButton(u16 x, u16 y, u16 pressure, void *data) {
-  u16 d = (int)data;
-  xQueueSend(buttonQueue, &d, 0);
-}
-
-static void setupButtons(void) {
-  u16 i;
-  buttonQueue = xQueueCreate(4, sizeof(u16));
-  
-  for (i = 0; i < 3; ++i) {
-    GLCD_drawRect(30 + 60*i, 30, 40, 40);
-	registerTSCallback(WIDTH - 30 - 40, WIDTH - 30, 30 + 60*i + 40, 30 + 60*i,
-	                   &highlightButton, (void*)i);
-  }
-}
-
-static void highlightButtonsTask(void *params) {
-  u16 d;
-
-  for (;;) {
-    xQueueReceive(buttonQueue, &d, portMAX_DELAY);
-
-    xSemaphoreTake(lcdLock, portMAX_DELAY);
-    GLCD_setTextColor(Red);
-    GLCD_fillRect(31 + 60*d, 31, 38, 38);
-    GLCD_setTextColor(Blue);
-    xSemaphoreGive(lcdLock);
-
-	vTaskDelay(500 / portTICK_RATE_MS);
-
-    xSemaphoreTake(lcdLock, portMAX_DELAY);
-    GLCD_setTextColor(White);
-    GLCD_fillRect(31 + 60*d, 31, 38, 38);
-    GLCD_setTextColor(Blue);
-    xSemaphoreGive(lcdLock);
-  }
-}
 /*-----------------------------------------------------------*/
-
-//X and Y refers to columns and rows, not pixel.
-void printCharXY(int x, int y, char c){
-	xSemaphoreTake(lcdLock, portMAX_DELAY);
-	GLCD_displayChar(y * 24, SCREEN_WIDTH - (16 * (x+1)), c);
-	xSemaphoreGive(lcdLock);
-}
 
 void test(){
-	printCharXY(0,0, HEAD);
-	printCharXY(0,1, BODY);
-	printCharXY(1,0, TAIL);
-	printCharXY(1,1, APPLE);
-	vTaskDelay(2000 / portTICK_RATE_MS);
-	
-	xSemaphoreTake(lcdLock, portMAX_DELAY);
-	GLCD_clear(White);
-	xSemaphoreGive(lcdLock);
-	vTaskDelay(2000 / portTICK_RATE_MS);
-	
-	GLCD_setTextColor(Black);
-	
-	printCharXY(0,0, HEAD);
-	printCharXY(0,1, BODY);
-	printCharXY(1,0, TAIL);
-	printCharXY(1,1, APPLE);
-
-	vTaskDelay(2000 / portTICK_RATE_MS);
-
-	printCharXY(0,0, EMPTY);
-	printCharXY(0,1, EMPTY);
-	printCharXY(1,0, EMPTY);
-	printCharXY(1,1, EMPTY);	
+	printCharXY(0,0,'#');
+	printf("%d", __LINE__);
+	exitGame(COMPLETE);
 }
+
 
 void Joy_stick(void *params){
 	
@@ -289,25 +251,23 @@ void Joy_stick(void *params){
 			break;
 		case JOY_UP:
 			ledOn(8);	
-			//LED_out (0x08);
-			break;
-		case JOY_LEFT:
-			ledOn(1);	
-			//LED_out (0x01);
-			break;
-		case JOY_RIGHT:
-			ledOn(2);	
-			//LED_out (0x02);
-			break;
-		case JOY_CENTER:
-			//initDisplay();
-			//ledOn(1);	
-			LED_out (0x0F);
+			up();
 			break;
 		case JOY_DOWN:
 			ledOn(4);	
+			down();
+			break;
+		case JOY_LEFT:
+			ledOn(1);	
+			left();
+			break;
+		case JOY_RIGHT:
+			ledOn(2);	
+			right();
+			break;
+		case JOY_CENTER:
+			ledOn(15);	
 			test();
-			//LED_out (0x02);
 			break;
 
 		default:
@@ -331,12 +291,12 @@ int main( void )
   printQueue = xQueueCreate(128, 1);
 //	Joy_stick();
   initDisplay();
-  setupButtons();
-  xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
-  //xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
+  //setupButtons();
+  xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
+  xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "led", 100, NULL, 1, NULL);
-  xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
-  xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
+  //xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
+  //xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
   printf("Setup complete ");  // this is redirected to the display
 
