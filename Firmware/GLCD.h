@@ -78,5 +78,5 @@ extern void GLCD_putPixel       (unsigned int y, unsigned int x);
 extern void GLCD_drawLine(uint8_t y, uint16_t x, uint16_t Length, uint8_t Direction);
 extern void GLCD_drawRect(uint8_t y, uint16_t x, uint8_t Height, uint16_t Width);
 extern void GLCD_fillRect(uint8_t y, uint16_t x, uint8_t Height, uint16_t Width);
-
+extern void GLCD_drawChar(unsigned int x, unsigned int y, unsigned short *c);
 #endif /* _GLCD_H */

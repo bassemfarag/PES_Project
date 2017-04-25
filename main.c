@@ -11,6 +11,7 @@
 #include "queue.h"
 #include "setup.h"
 #include "assert.h"
+
 #include "GLCD.h"
 #include "stm3210c_eval_ioe.h"
 #include <defines.h>
@@ -23,15 +24,6 @@ volatile int dir_v = 0;
 volatile int dir_h = 0;
 
 xSemaphoreHandle lcdLock;
-
-static void print_sprite(unsigned int pos_x, unsigned int pos_y, unsigned int sprite) {
-	//char* sprite_path;
-	//sprintf(sprite_path, "SPRITE_", sprite);
-	GLCD_bitmap(SCREEN_WIDTH - pos_x*SPRITE_DIM, 
-							pos_y*SPRITE_DIM, 
-							SPRITE_DIM, SPRITE_DIM, 
-							(unsigned char*) blob);
-}
 
 static void initDisplay () {
   /* LCD Module init */
@@ -249,6 +241,40 @@ static void highlightButtonsTask(void *params) {
 }
 /*-----------------------------------------------------------*/
 
+//X and Y refers to columns and rows, not pixel.
+void printCharXY(int x, int y, char c){
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+	GLCD_displayChar(y * 24, SCREEN_WIDTH - (16 * (x+1)), c);
+	xSemaphoreGive(lcdLock);
+}
+
+void test(){
+	printCharXY(0,0, HEAD);
+	printCharXY(0,1, BODY);
+	printCharXY(1,0, TAIL);
+	printCharXY(1,1, APPLE);
+	vTaskDelay(2000 / portTICK_RATE_MS);
+	
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+	GLCD_clear(White);
+	xSemaphoreGive(lcdLock);
+	vTaskDelay(2000 / portTICK_RATE_MS);
+	
+	GLCD_setTextColor(Black);
+	
+	printCharXY(0,0, HEAD);
+	printCharXY(0,1, BODY);
+	printCharXY(1,0, TAIL);
+	printCharXY(1,1, APPLE);
+
+	vTaskDelay(2000 / portTICK_RATE_MS);
+
+	printCharXY(0,0, EMPTY);
+	printCharXY(0,1, EMPTY);
+	printCharXY(1,0, EMPTY);
+	printCharXY(1,1, EMPTY);	
+}
+
 void Joy_stick(void *params){
 	
 	volatile JOY_State_TypeDef state;
@@ -274,12 +300,13 @@ void Joy_stick(void *params){
 			//LED_out (0x02);
 			break;
 		case JOY_CENTER:
-			print_sprite(10, 10, 0);
-		//ledOn(1);	
+			//initDisplay();
+			//ledOn(1);	
 			LED_out (0x0F);
 			break;
 		case JOY_DOWN:
 			ledOn(4);	
+			test();
 			//LED_out (0x02);
 			break;
 
@@ -305,9 +332,8 @@ int main( void )
 //	Joy_stick();
   initDisplay();
   setupButtons();
-
   xTaskCreate(lcdTask, "lcd", 100, NULL, 1, NULL);
-  xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
+  //xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "led", 100, NULL, 1, NULL);
   xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
