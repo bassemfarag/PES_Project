@@ -11,14 +11,13 @@
 //Screen Definitions
 #define SCREEN_WIDTH        320
 #define SCREEN_HEIGHT       240
-#define SPRITE_DIM          24
-#define VERT                SCREEN_WIDTH  / SPRITE_DIM
-#define HOR                 SCREEN_HEIGHT / SPRITE_DIM
-#define MAX_X               SCREEN_WIDTH  / 16
-#define MAX_Y               (SCREEN_HEIGHT / 24)-1
+#define SPRITE_DIM_X        16
+#define SPRITE_DIM_Y        24
+#define MAX_X               SCREEN_WIDTH  / SPRITE_DIM_X
+#define MAX_Y               (SCREEN_HEIGHT / SPRITE_DIM_Y)
 
 //Snake start Length
-#define LENGTH_START        2
+#define LENGTH_START        4
 
 //Directions
 #define UP                  101
@@ -33,7 +32,7 @@
 #define WALL                204
 #define GAME_OVER           205
 #define COMPLETE            206
-#define ERROR               207
+#define ERR                 207
 #define WIN                 208
 
 

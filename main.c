@@ -3,6 +3,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -25,18 +26,19 @@ volatile int tailward[MAX_X][MAX_Y];
 volatile int head;
 volatile int tail;
 volatile int apple;
-volatile int dir_x = 0, dir_y = 0;
+volatile int dir_x = 1, dir_y = 0;
 volatile int length;
+volatile int STAT;
 
 //Variables to manage the speed of the game
-volatile int WAIT = 0;
+volatile int WAIT = 50;
 const int timeStep = 10;
 
 //Functions to set directions of the snake movement.
-void up()   { dir_x =  0; dir_y =  1; }
-void down() { dir_x =  0; dir_y = -1; }
-void left() { dir_x = -1; dir_y =  0; }
-void right(){ dir_x =  1; dir_y =  0; }
+void up()   { if (dir_x) { dir_x =  0; dir_y =  1; }}
+void down() { if (dir_x) { dir_x =  0; dir_y = -1; }}
+void left() { if (dir_y) { dir_x = -1; dir_y =  0; }}
+void right(){ if (dir_y) { dir_x =  1; dir_y =  0; }}
 
 //Functions to manage board
 int  getX(int coord)                             {return (coord / 100);}
@@ -62,8 +64,8 @@ extern void printCharXY(int x, int y, char c){
 	xSemaphoreGive(lcdLock);
 }
 
-void updateScreen(BoardPosition* pos){
-	printCharXY(pos->x, pos->y, pos->content);  
+void updateScreen(int coord){
+	printCharXY(getX(coord), getY(coord), getContent(coord));  
 }
 
 static void ledOn(int led) {
@@ -96,7 +98,8 @@ static void ledTask(void *params) {
 
 //Status codes to show when exiting game.
 void exitGame(int stat) {
-  gotoxy(0, MAX_Y+3);
+	STAT = stat;
+  //gotoxy(0, MAX_Y+3);
   printf("%03d: ", stat);
   switch (stat) {
     case ERR       : printf("Some fatal error occurred"); break;
@@ -105,12 +108,14 @@ void exitGame(int stat) {
     case COMPLETE  : printf("End of program.");           break;
     default        : printf("LINE");
   }
-  exit(stat);
+	dir_x = 0;
+	dir_y = 0;
+  //exit(stat);
 }
 
 //Print information about the board
 void printBoardPos(int pos) {
-  gotoxy(0, MAX_Y+2);
+  //gotoxy(0, MAX_Y+2);
   if (getTailward(pos) && getHeadward(pos))
     printf("h(%2d,%2d) '%c':(%2d, %2d) t(%2d,%2d)\n", 
 	   getX(getHeadward(pos)), getY(getHeadward(pos)), getContent(pos), getX(pos), getY(pos), getX(getTailward(pos)), getY(getTailward(pos))); 
@@ -143,12 +148,13 @@ void printBoard(){
 
 //Generate Apple and update the screen with new position
 void generateApple() {
+  int x, y; 
+
   //If the board is full, i.e. there is no place left to continue.
   if (length >= MAX_X * MAX_Y)
     exitGame(WIN);
 
   //Find an empty slot to put the apple
-  int x, y; 
   while (1) {
     x = rand() % MAX_X;
     y = rand() % MAX_Y;
@@ -201,7 +207,7 @@ void initiate() {
   setContent(tail, TAIL);
  
   //Generate Apple
-  srand(time(NULL));
+  srand(NULL);
   generateApple();
   
   //Set starting direction
@@ -209,7 +215,9 @@ void initiate() {
   
   //Clear screen and print board;
   printBoard();
-  drawWalls(); //Only on windows
+  //drawWalls(); //Only on windows
+	
+	STAT = RUNNING;
 }
 
 
@@ -248,8 +256,14 @@ static void printTask(void *params) {
 void tick(){ 
   int headOld = head, tailOld = tail;
   int mx = MAX_X, my = MAX_Y;
- 
-  head = setXY((getX(head)+dir_x) % mx, (getY(head)-dir_y) % my);
+	int new_x, new_y;
+	new_x = (getX(head)+ dir_x)%mx;
+	if(new_x < 0)
+		new_x = mx + new_x;
+	new_y = (getY(head)- dir_y)%my;
+	if(new_y < 0)
+		new_y = my + new_y;
+  head = setXY(new_x, new_y);
   
   switch (getContent(head)){
     case APPLE :
@@ -273,7 +287,18 @@ void tick(){
       setContent(head, HEAD);
       setTailwardCoord(head, headOld);
       break;
-    default    : exitGame(__LINE__);
+    default    :
+			printBoardPos(head);
+			exitGame(__LINE__);	
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
+			printBoardPos(head);
   }
   updateScreen(headOld);
   updateScreen(head);
@@ -297,8 +322,36 @@ void test(){
 	printf("%d", __LINE__);
 	exitGame(COMPLETE);
 }
+void wait(int delayMS){
+	vTaskDelay(delayMS / portTICK_RATE_MS);
+}
 
+void autoMoveTask(void *params){
+	tick();
+	while(0){
+		if(!getX(head)) {
+			down();
+			tick();
+			wait(WAIT);
+			right();
+		}
 
+		if(getX(head) == MAX_X-1) {
+			down();
+			tick();
+			wait(WAIT);
+			left();
+		}
+		tick();
+		wait(WAIT);
+	}
+	while(STAT == RUNNING){
+		tick();
+		wait(WAIT);
+	}
+	
+	while (1) {;};
+}
 void Joy_stick(void *params){
 	
 	volatile JOY_State_TypeDef state;
@@ -357,7 +410,8 @@ int main( void )
   //setupButtons();
   xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
-  xTaskCreate(Joy_stick, "led", 100, NULL, 1, NULL);
+  xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
+  xTaskCreate(autoMoveTask, "tick", 100, NULL, 1, NULL);
   //xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   //xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
