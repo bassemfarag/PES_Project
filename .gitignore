@@ -9,3 +9,6 @@ stm3210c-skeleton.uvopt
 *.Arnav
 >>>>>>> origin/master
 *.map
+*.Arnav
+*.uvproj
+stm3210c-skeleton.uvopt

@@ -18,32 +18,40 @@
 
 /*-----------------------------------------------------------*/
 
-volatile int dir_y = 0;
-volatile int dir_x = 0;
-volatile int length = 3;
-volatile int status = INIT;
+//Global variables from board.
+volatile int content[MAX_X][MAX_Y];
+volatile int headward[MAX_X][MAX_Y];
+volatile int tailward[MAX_X][MAX_Y];
+volatile int head;
+volatile int tail;
+volatile int apple;
+volatile int dir_x = 0, dir_y = 0;
+volatile int length;
 
-volatile int WAIT = 30;
+//Variables to manage the speed of the game
+volatile int WAIT = 0;
 const int timeStep = 10;
 
-//Board Definition
-typedef struct BoardPositionType{
-  int x, y;
-  char content;
-  struct BoardPositionType* headward; //Towards Head;
-  struct BoardPositionType* tailward; //Towards Tail;
-} BoardPosition;
+//Functions to set directions of the snake movement.
+void up()   { dir_x =  0; dir_y =  1; }
+void down() { dir_x =  0; dir_y = -1; }
+void left() { dir_x = -1; dir_y =  0; }
+void right(){ dir_x =  1; dir_y =  0; }
 
-char content[MAX_X][MAX_Y];
-int X[MAX_X][MAX_Y];
-int prevY[MAX_X][MAX_Y];
-int nextX[MAX_X][MAX_Y];
-int nextY[MAX_X][MAX_Y];
-
-BoardPosition board[MAX_X][MAX_Y];
-BoardPosition* head;
-BoardPosition* tail;
-BoardPosition* apple;
+//Functions to manage board
+int  getX(int coord)                             {return (coord / 100);}
+int  getY(int coord)                             {return (coord % 100);}
+int  setX(int coord, int x)                      {return x*100 + getY(coord);}
+int  setY(int coord, int y)                      {return getX(coord)*100 + y;}
+int  setXY(int x, int y)                         {return x*100+y;}
+int  getContent(int coord)                       {return content[getX(coord)][getY(coord)];}
+void setContent(int coord, char cont)            {content[getX(coord)][getY(coord)] = cont;}
+int  getHeadward(int coord)                      {return headward[getX(coord)][getY(coord)];}
+void setHeadward(int x, int y, int coord)        {headward[x][y] = coord;}
+void setHeadwardCoord(int atCoord, int toCoord)  {headward[getX(atCoord)][getY(atCoord)] = toCoord;}
+int  getTailward(int coord)                      {return tailward[getX(coord)][getY(coord)];}
+void setTailward(int x, int y, int coord)        {tailward[x][y] = coord;}
+void setTailwardCoord(int atCoord, int toCoord)  {tailward[getX(atCoord)][getY(atCoord)] = toCoord;}
 
 xSemaphoreHandle lcdLock;
 
@@ -54,63 +62,13 @@ extern void printCharXY(int x, int y, char c){
 	xSemaphoreGive(lcdLock);
 }
 
-
 void updateScreen(BoardPosition* pos){
 	printCharXY(pos->x, pos->y, pos->content);  
-}
-
-
-void up(){
-  dir_y = 1;
-  dir_x = 0;
-}
-
-void down(){
-  dir_y = -1;
-  dir_x = 0;
-}
-
-void left(){
-  dir_y = 0;
-  dir_x = -1;
-}
-
-void right(){
-  dir_y = 0;
-  dir_x = 1;
-}
-
-void exitGame(int stat) {
-  
-  printf("%03d: ", stat);
-  switch (stat) {
-    case ERROR :
-      printf("Some fatal error occurred");
-      break;
-     
-    case WIN :
-      printf("Congratulations! You won!");
-      break;
-     
-    case GAME_OVER :
-      printf("Uh oh! Game Over!");
-      break;
-      
-    case COMPLETE :
-      printf("End of program.");
-      break;
-    }
-  
-  //exit(stat);
-  return;
 }
 
 static void ledOn(int led) {
 	LED_out(led);
 }
-
-
-
 
 void clearScreen() {
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
@@ -118,7 +76,6 @@ void clearScreen() {
 	GLCD_setTextColor(Black);
 	xSemaphoreGive(lcdLock);
 }
-
 
 static void initDisplay () {
   /* LCD Module init */
@@ -137,54 +94,124 @@ static void ledTask(void *params) {
   }
 }
 
+//Status codes to show when exiting game.
+void exitGame(int stat) {
+  gotoxy(0, MAX_Y+3);
+  printf("%03d: ", stat);
+  switch (stat) {
+    case ERR       : printf("Some fatal error occurred"); break;
+    case WIN       : printf("Congratulations! You won!"); break;
+    case GAME_OVER : printf("Uh oh! Game Over!");         break;
+    case COMPLETE  : printf("End of program.");           break;
+    default        : printf("LINE");
+  }
+  exit(stat);
+}
 
+//Print information about the board
+void printBoardPos(int pos) {
+  gotoxy(0, MAX_Y+2);
+  if (getTailward(pos) && getHeadward(pos))
+    printf("h(%2d,%2d) '%c':(%2d, %2d) t(%2d,%2d)\n", 
+	   getX(getHeadward(pos)), getY(getHeadward(pos)), getContent(pos), getX(pos), getY(pos), getX(getTailward(pos)), getY(getTailward(pos))); 
+  else if (getHeadward(pos))
+    printf("h(%2d,%2d) '%c':(%2d, %2d) t(--,--)\n", 
+	   getX(getHeadward(pos)), getY(getHeadward(pos)), getContent(pos), getX(pos), getY(pos));
+  else if (getTailward(pos))
+    printf("h(--,--) '%c':(%2d, %2d) t(%2d,%2d)\n", 
+	   getContent(pos), getX(pos), getY(pos),  getX(getTailward(pos)), getY(getTailward(pos)));
+  else
+    printf("h(--,--) '%c':(%2d, %2d) t(--,--)\n", 
+	   getContent(pos), getX(pos), getY(pos));
+}
+
+//Print the snake on the screen
 void printSnake() {
-  BoardPosition* pos = head;
-
-  printf("%d: ", length);
-  while (pos != NULL) {
-    updateScreen(pos);
-    pos = pos->tailward;
-  }
-
-  //printf("\r\n");
-  return;
+  int pos;
+  for (pos = head; pos; pos = getTailward(pos))
+    updateScreen(pos);   
 }
+
+//(Re-)print the contents of the full board (Full Update)
 void printBoard(){
-  int i = 0,j = 0;
-  //char out[MAX_Y*2];
-  //char temp[4];
-
-  //printSnake();
+  int i, j;
   clearScreen();
-	exitGame(__LINE__);
-	
-  for (i=0;i<MAX_Y;i++){
-    for (j=0;j<MAX_X;j++){
-			//printCharXY(j,i, board[j][i].content);
-      printCharXY(j,i, TAIL);
-    };
- };
+  for (i=0;i<MAX_Y;i++)
+    for (j=0;j<MAX_X;j++)
+      updateScreen(setXY(j,i));
 }
 
-void initiate() {
-  int i,j;
-	BoardPosition* pos;
-  for (i=0;i<MAX_Y;i++) {
-    for (j=0;j<MAX_X;j++){
-			pos = &board[j][i];
-			//pos->x = 5;
-			//pos->y = i;*/
-      /*board[j][i].x = j;
-      board[j][i].y = i;
-      board[j][i].content = EMPTY;
-      board[j][i].headward = NULL;
-      board[j][i].tailward = NULL;*/
-    }
+//Generate Apple and update the screen with new position
+void generateApple() {
+  //If the board is full, i.e. there is no place left to continue.
+  if (length >= MAX_X * MAX_Y)
+    exitGame(WIN);
+
+  //Find an empty slot to put the apple
+  int x, y; 
+  while (1) {
+    x = rand() % MAX_X;
+    y = rand() % MAX_Y;
+    if (getContent(setXY(x,y)) == EMPTY)
+      break;
   }
-	
-	exitGame(__LINE__);
+  
+  //Update the variable with the new position
+  apple = setXY(x,y);
+  setContent(apple, APPLE);
+  updateScreen(apple);
 }
+
+//Initialise the board and snake.
+void initiate() {
+  int i,j, pos = head;
+
+  //Clean/Reset board array
+  for (i=0;i<MAX_Y;i++)
+    for (j=0;j<MAX_X;j++){
+      setContent(setXY(j,i), EMPTY);
+      setHeadward(j,i,0);
+      setTailward(j,i,0);
+    }
+ 
+  //Assign Snake of variable length;
+  length = LENGTH_START;
+  i = length -1;
+  head = setXY(i,0);
+  tail = setXY(0,0);
+  
+  //Set the trailing pointers
+  do {
+    setContent(pos, BODY);
+    setTailward(getX(pos), getY(pos), setXY(i-1,0));
+    pos = getTailward(pos);
+    i--;
+  } while (pos != tail);
+  pos = tail;
+  
+  //Set the preceding pointers
+  do {
+    setHeadwardCoord(pos, setXY(i+1,0));
+    pos = getHeadward(pos);
+    i++;
+  } while (pos != head);
+  
+  //Enter content;
+  setContent(head, HEAD);
+  setContent(tail, TAIL);
+ 
+  //Generate Apple
+  srand(time(NULL));
+  generateApple();
+  
+  //Set starting direction
+  right();
+  
+  //Clear screen and print board;
+  printBoard();
+  drawWalls(); //Only on windows
+}
+
 
 
 /*-----------------------------------------------------------*/
@@ -216,6 +243,45 @@ static void printTask(void *params) {
   }
 }
 
+
+//Actual game logic for each step forward taken.
+void tick(){ 
+  int headOld = head, tailOld = tail;
+  int mx = MAX_X, my = MAX_Y;
+ 
+  head = setXY((getX(head)+dir_x) % mx, (getY(head)-dir_y) % my);
+  
+  switch (getContent(head)){
+    case APPLE :
+      length++;
+      generateApple();     
+      setHeadwardCoord(headOld, head);
+      setContent(headOld, BODY);
+      setContent(head, HEAD);
+      setTailwardCoord(head, headOld);
+      break;
+    case BODY  : exitGame(GAME_OVER);
+    case TAIL  :
+    case EMPTY :
+      tail = getHeadward(tail);
+      setContent(tailOld, EMPTY);
+      setHeadwardCoord(tailOld, 0);
+      setContent(headOld, BODY);
+      setHeadwardCoord(headOld, head);
+      setContent(tail, TAIL);
+      setTailwardCoord(tail, 0);
+      setContent(head, HEAD);
+      setTailwardCoord(head, headOld);
+      break;
+    default    : exitGame(__LINE__);
+  }
+  updateScreen(headOld);
+  updateScreen(head);
+  updateScreen(tailOld);
+  updateScreen(tail);
+}
+
+
 /* Retarget printing to the serial port 1 */
 int fputc(int ch, FILE *f) {
   unsigned char c = ch;
@@ -223,10 +289,6 @@ int fputc(int ch, FILE *f) {
   return ch;
 }
 
-
-/*-----------------------------------------------------------*/
-
-/*-----------------------------------------------------------*/
 
 /*-----------------------------------------------------------*/
 
@@ -291,6 +353,7 @@ int main( void )
   printQueue = xQueueCreate(128, 1);
 //	Joy_stick();
   initDisplay();
+  initiate();
   //setupButtons();
   xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
