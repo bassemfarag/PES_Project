@@ -469,10 +469,12 @@ void GLCD_clearLn(unsigned int ln) {
 *                   w:        width of bitmap                                  *
 *                   h:        height of bitmap                                 *
 *                   bitmap:   address at which the bitmap data resides         *
-*   Return:                                                                    *
+*   Return:                  
+
+*
 *******************************************************************************/
 
-void GLCD_bitmap (unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned char *bitmap) {
+void GLCD_bitmap (unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned short *bitmap) {
   unsigned int   i;
   unsigned int   len = w*h;
   unsigned short *bitmap_ptr = (unsigned short *)bitmap;

@@ -72,7 +72,7 @@ extern void GLCD_setTextColor   (unsigned short color);
 extern void GLCD_setBackColor   (unsigned short color);
 extern void GLCD_displayChar    (unsigned int ln, unsigned int col, unsigned char  c);
 extern void GLCD_displayStringLn(unsigned int ln, unsigned char *s);
-extern void GLCD_bitmap         (unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned char *bitmap);
+extern void GLCD_bitmap         (unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned short *bitmap);
 extern void GLCD_clearLn        (unsigned int ln);
 extern void GLCD_putPixel       (unsigned int y, unsigned int x);
 extern void GLCD_drawLine(uint8_t y, uint16_t x, uint16_t Length, uint8_t Direction);

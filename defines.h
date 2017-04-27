@@ -14,7 +14,7 @@
 #define SPRITE_DIM_X        16
 #define SPRITE_DIM_Y        24
 #define MAX_X               SCREEN_WIDTH  / SPRITE_DIM_X
-#define MAX_Y               (SCREEN_HEIGHT / SPRITE_DIM_Y)
+#define MAX_Y               SCREEN_HEIGHT / SPRITE_DIM_Y
 
 //Snake start Length
 #define LENGTH_START        4
@@ -37,6 +37,6 @@
 
 
 //Sprites
-//#include "Sprites/blob.h"
+#include "Sprites/blob.h"
 
 

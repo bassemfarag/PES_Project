@@ -15,7 +15,7 @@
 
 #include "GLCD.h"
 #include "stm3210c_eval_ioe.h"
-#include <defines.h>
+#include "defines.h"
 
 /*-----------------------------------------------------------*/
 
@@ -64,8 +64,32 @@ extern void printCharXY(int x, int y, char c){
 	xSemaphoreGive(lcdLock);
 }
 
+//void printSpriteXY(int x, int y, char c) {
+//	//xSemaphoreTake(lcdLock, 4portMAX_DELAY);
+//	switch (c) {
+//		case BODY  : 
+//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_body);
+//				break;
+//		case TAIL  : 
+//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_body);
+//				break;
+//		case HEAD  :
+//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_head);
+//				break;
+//		case APPLE :
+//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_apple);
+//				break;
+//  	default    : 
+//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_empty);
+//	}
+//	//GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite);
+//	
+//	//xSemaphoreGive(lcdLock);
+//}
+
 void updateScreen(int coord){
 	printCharXY(getX(coord), getY(coord), getContent(coord));  
+	//printSpriteXY(getX(coord), getY(coord), getContent(coord));  
 }
 
 static void ledOn(int led) {
@@ -317,13 +341,12 @@ int fputc(int ch, FILE *f) {
 
 /*-----------------------------------------------------------*/
 
-void test(){
-	printCharXY(0,0,'#');
-	printf("%d", __LINE__);
-	exitGame(COMPLETE);
-}
 void wait(int delayMS){
 	vTaskDelay(delayMS / portTICK_RATE_MS);
+}
+
+void test(){
+	GLCD_bitmap(100, 100, 16, 16, sprite_body);
 }
 
 void autoMoveTask(void *params){
@@ -358,7 +381,6 @@ void Joy_stick(void *params){
 	
 	for(;;){
 	 state = JOY_NONE;
-	//state =  IOE_JoyStickGetState();
 	state =  IOE_JoyStickGetState();
 	ledOn(0);
 	switch (state) {
@@ -383,12 +405,13 @@ void Joy_stick(void *params){
 		case JOY_CENTER:
 			ledOn(15);	
 			test();
+			//tick();
 			break;
 
 		default:
 			break;	
 	}
-	vTaskDelay(10 / portTICK_RATE_MS);
+	vTaskDelay(50 / portTICK_RATE_MS);
 }
 }
 
@@ -407,12 +430,13 @@ int main( void )
 //	Joy_stick();
   initDisplay();
   initiate();
-  //setupButtons();
-  xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
-  xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
+  
+	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
+  //xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
   xTaskCreate(autoMoveTask, "tick", 100, NULL, 1, NULL);
-  //xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
+  
+	//xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   //xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
   printf("Setup complete ");  // this is redirected to the display
