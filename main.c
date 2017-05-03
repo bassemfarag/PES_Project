@@ -31,7 +31,7 @@ volatile int length;
 volatile int STAT;
 
 //Variables to manage the speed of the game
-volatile int WAIT = 50;
+volatile int WAIT = 500;
 const int timeStep = 10;
 
 //Functions to set directions of the snake movement.
@@ -57,6 +57,31 @@ void setTailwardCoord(int atCoord, int toCoord)  {tailward[getX(atCoord)][getY(a
 
 xSemaphoreHandle lcdLock;
 
+void test(){
+	clearScreen();
+}
+void test_left(){
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+//	GLCD_bitmap(100, 100, 16, 16, sprite_body);
+	xSemaphoreGive(lcdLock);
+}
+void test_right(){
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+//	GLCD_bitmap(50, 50, 16, 16, sprite_apple);
+	xSemaphoreGive(lcdLock);
+}
+void test_up(){
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+	GLCD_bitmap(150, 150, 16, 16, sprite_apple);
+	xSemaphoreGive(lcdLock);
+}
+void test_down(){
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+//	GLCD_bitmap(200, 200, 16, 16, sprite_head);
+	xSemaphoreGive(lcdLock);
+}
+
+
 //X and Y refers to columns and rows, not pixel.
 extern void printCharXY(int x, int y, char c){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
@@ -64,32 +89,45 @@ extern void printCharXY(int x, int y, char c){
 	xSemaphoreGive(lcdLock);
 }
 
-//void printSpriteXY(int x, int y, char c) {
-//	//xSemaphoreTake(lcdLock, 4portMAX_DELAY);
-//	switch (c) {
-//		case BODY  : 
-//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_body);
-//				break;
-//		case TAIL  : 
-//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_body);
-//				break;
-//		case HEAD  :
-//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_head);
-//				break;
-//		case APPLE :
-//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_apple);
-//				break;
-//  	default    : 
-//				GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite_empty);
-//	}
-//	//GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), y * SPRITE_DIM_Y, SPRITE_DIM_X, SPRITE_DIM_Y, sprite);
-//	
-//	//xSemaphoreGive(lcdLock);
-//}
+
+void printSpriteXY(int x, int y, unsigned short * sprite) {
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+
+	GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)),
+							y * SPRITE_DIM_Y,
+							SPRITE_DIM_X,
+							SPRITE_DIM_Y,
+							sprite);
+	
+	xSemaphoreGive(lcdLock);
+}
 
 void updateScreen(int coord){
-	printCharXY(getX(coord), getY(coord), getContent(coord));  
-	//printSpriteXY(getX(coord), getY(coord), getContent(coord));  
+		
+//	switch (getContent(coord)) {
+//		case BODY  : 
+//				printSpriteXY(getX(coord), getY(coord), sprite_body);
+//				break;
+//		case TAIL  : 
+//				printSpriteXY(getX(coord), getY(coord), sprite_body);
+//				break;
+//		case HEAD  :
+//				printSpriteXY(getX(coord), getY(coord), sprite_head);
+//				break;
+//		case APPLE :
+//				printSpriteXY(getX(coord), getY(coord), sprite_apple);
+//				break;
+//		default    : 
+//				printSpriteXY(getX(coord), getY(coord), sprite_empty);
+//	}
+		printCharXY(getX(coord), getY(coord), getContent(coord));  
+
+	if (getContent(coord)==APPLE)
+		//printSpriteXY(getX(coord), getY(coord), sprite_apple);
+	if (getContent(coord)==HEAD)
+		printSpriteXY(getX(coord), getY(coord), sprite_head);
+
+	LED_out(1<<3);
 }
 
 static void ledOn(int led) {
@@ -108,6 +146,7 @@ static void initDisplay () {
   lcdLock = xSemaphoreCreateMutex();
   GLCD_init();
 	clearScreen();
+	xSemaphoreGive(lcdLock);
 }
 
 static void ledTask(void *params) {
@@ -115,7 +154,7 @@ static void ledTask(void *params) {
 
   for (;;) {
 		ledOn(1<<t);
-		t = (t+1)%4;
+//		t = (t+1)%4;
 	  vTaskDelay(300 / portTICK_RATE_MS);
   }
 }
@@ -312,20 +351,12 @@ void tick(){
       setTailwardCoord(head, headOld);
       break;
     default    :
-			printBoardPos(head);
 			exitGame(__LINE__);	
-			printBoardPos(head);
-			printBoardPos(head);
-			printBoardPos(head);
-			printBoardPos(head);
-			printBoardPos(head);
-			printBoardPos(head);
-			printBoardPos(head);
-			printBoardPos(head);
 			printBoardPos(head);
   }
   updateScreen(headOld);
   updateScreen(head);
+	printBoardPos(head);
   updateScreen(tailOld);
   updateScreen(tail);
 }
@@ -343,10 +374,6 @@ int fputc(int ch, FILE *f) {
 
 void wait(int delayMS){
 	vTaskDelay(delayMS / portTICK_RATE_MS);
-}
-
-void test(){
-	GLCD_bitmap(100, 100, 16, 16, sprite_body);
 }
 
 void autoMoveTask(void *params){
@@ -370,6 +397,7 @@ void autoMoveTask(void *params){
 	}
 	while(STAT == RUNNING){
 		tick();
+		ledOn(1<<2);
 		wait(WAIT);
 	}
 	
@@ -389,18 +417,22 @@ void Joy_stick(void *params){
 		case JOY_UP:
 			ledOn(8);	
 			up();
+			test_up();
 			break;
 		case JOY_DOWN:
 			ledOn(4);	
 			down();
+			test_down();
 			break;
 		case JOY_LEFT:
 			ledOn(1);	
 			left();
+			test_left();
 			break;
 		case JOY_RIGHT:
 			ledOn(2);	
 			right();
+			test_right();
 			break;
 		case JOY_CENTER:
 			ledOn(15);	
@@ -411,6 +443,8 @@ void Joy_stick(void *params){
 		default:
 			break;	
 	}
+	ledOn(1<<1);
+
 	vTaskDelay(50 / portTICK_RATE_MS);
 }
 }
@@ -432,7 +466,7 @@ int main( void )
   initiate();
   
 	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
-  //xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
+  xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
   xTaskCreate(autoMoveTask, "tick", 100, NULL, 1, NULL);
   
