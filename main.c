@@ -62,17 +62,17 @@ void test(){
 }
 void test_left(){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
-//	GLCD_bitmap(100, 100, 16, 16, sprite_body);
+  GLCD_bitmap(100, 100, 16, 16, sprite_body);
 	xSemaphoreGive(lcdLock);
 }
 void test_right(){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
-//	GLCD_bitmap(50, 50, 16, 16, sprite_apple);
+	GLCD_bitmap(50, 50, 16, 16, sprite_apple);
 	xSemaphoreGive(lcdLock);
 }
 void test_up(){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
-	GLCD_bitmap(150, 150, 16, 16, sprite_apple);
+	//GLCD_bitmap(150, 150, 16, 16, sprite_apple);
 	xSemaphoreGive(lcdLock);
 }
 void test_down(){
@@ -85,22 +85,22 @@ void test_down(){
 //X and Y refers to columns and rows, not pixel.
 extern void printCharXY(int x, int y, char c){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
-	GLCD_displayChar(y * 24, SCREEN_WIDTH - (16 * (x+1)), c);
+	GLCD_displayChar(y * SPRITE_DIM_Y, SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)), c);
 	xSemaphoreGive(lcdLock);
 }
 
 
-void printSpriteXY(int x, int y, unsigned short * sprite) {
-	xSemaphoreTake(lcdLock, portMAX_DELAY);
+//void printSpriteXY(int x, int y, unsigned short * sprite) {
+//	xSemaphoreTake(lcdLock, portMAX_DELAY);
 
-	GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)),
-							y * SPRITE_DIM_Y,
-							SPRITE_DIM_X,
-							SPRITE_DIM_Y,
-							sprite);
-	
-	xSemaphoreGive(lcdLock);
-}
+//	GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)),
+//							y * SPRITE_DIM_Y,
+//							SPRITE_DIM_X,
+//							SPRITE_DIM_Y,
+//							sprite);
+//	
+//	xSemaphoreGive(lcdLock);
+//}
 
 void updateScreen(int coord){
 		
@@ -122,10 +122,10 @@ void updateScreen(int coord){
 //	}
 		printCharXY(getX(coord), getY(coord), getContent(coord));  
 
-	if (getContent(coord)==APPLE)
-		//printSpriteXY(getX(coord), getY(coord), sprite_apple);
-	if (getContent(coord)==HEAD)
-		printSpriteXY(getX(coord), getY(coord), sprite_head);
+//	if (getContent(coord)==APPLE)
+//		//printSpriteXY(getX(coord), getY(coord), sprite_apple);
+//	if (getContent(coord)==HEAD)
+//		printSpriteXY(getX(coord), getY(coord), sprite_head);
 
 	LED_out(1<<3);
 }
@@ -437,7 +437,7 @@ void Joy_stick(void *params){
 		case JOY_CENTER:
 			ledOn(15);	
 			test();
-			//tick();
+			tick();
 			break;
 
 		default:
