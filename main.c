@@ -31,7 +31,7 @@ volatile int length;
 volatile int STAT;
 
 //Variables to manage the speed of the game
-volatile int WAIT = 500;
+volatile int WAIT = 150;
 const int timeStep = 10;
 
 //Functions to set directions of the snake movement.
@@ -56,18 +56,18 @@ void setTailward(int x, int y, int coord)        {tailward[x][y] = coord;}
 void setTailwardCoord(int atCoord, int toCoord)  {tailward[getX(atCoord)][getY(atCoord)] = toCoord;}
 
 xSemaphoreHandle lcdLock;
-
+/*
 void test(){
 	clearScreen();
 }
 void test_left(){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
-  GLCD_bitmap(100, 100, 16, 16, sprite_body);
+	//GLCD_bitmap(100, 100, 16, 16, sprite_body);
 	xSemaphoreGive(lcdLock);
 }
 void test_right(){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
-	GLCD_bitmap(50, 50, 16, 16, sprite_apple);
+	//GLCD_bitmap(50, 50, 16, 16, sprite_apple);
 	xSemaphoreGive(lcdLock);
 }
 void test_up(){
@@ -80,7 +80,7 @@ void test_down(){
 //	GLCD_bitmap(200, 200, 16, 16, sprite_head);
 	xSemaphoreGive(lcdLock);
 }
-
+*/
 
 //X and Y refers to columns and rows, not pixel.
 extern void printCharXY(int x, int y, char c){
@@ -127,7 +127,7 @@ void updateScreen(int coord){
 //	if (getContent(coord)==HEAD)
 //		printSpriteXY(getX(coord), getY(coord), sprite_head);
 
-	LED_out(1<<3);
+//	LED_out(1<<3);
 }
 
 static void ledOn(int led) {
@@ -149,15 +149,15 @@ static void initDisplay () {
 	xSemaphoreGive(lcdLock);
 }
 
-static void ledTask(void *params) {
-  unsigned short t = 0;
+//static void ledTask(void *params) {
+//  unsigned short t = 0;
 
-  for (;;) {
-		ledOn(1<<t);
-//		t = (t+1)%4;
-	  vTaskDelay(300 / portTICK_RATE_MS);
-  }
-}
+//  for (;;) {
+//	//	ledOn(1<<t);
+////		t = (t+1)%4;
+//	//  vTaskDelay(300 / portTICK_RATE_MS);
+//  }
+//}
 
 //Status codes to show when exiting game.
 void exitGame(int stat) {
@@ -352,7 +352,7 @@ void tick(){
       break;
     default    :
 			exitGame(__LINE__);	
-			printBoardPos(head);
+//			printBoardPos(head);
   }
   updateScreen(headOld);
   updateScreen(head);
@@ -389,7 +389,7 @@ void autoMoveTask(void *params){
 		if(getX(head) == MAX_X-1) {
 			down();
 			tick();
-			wait(WAIT);
+		  wait(WAIT);
 			left();
 		}
 		tick();
@@ -397,7 +397,7 @@ void autoMoveTask(void *params){
 	}
 	while(STAT == RUNNING){
 		tick();
-		ledOn(1<<2);
+		//ledOn(1<<2);
 		wait(WAIT);
 	}
 	
@@ -417,33 +417,33 @@ void Joy_stick(void *params){
 		case JOY_UP:
 			ledOn(8);	
 			up();
-			test_up();
+			//test_up();
 			break;
 		case JOY_DOWN:
 			ledOn(4);	
 			down();
-			test_down();
+		//	test_down();
 			break;
 		case JOY_LEFT:
 			ledOn(1);	
 			left();
-			test_left();
+		//	test_left();
 			break;
 		case JOY_RIGHT:
 			ledOn(2);	
 			right();
-			test_right();
+		//	test_right();
 			break;
 		case JOY_CENTER:
 			ledOn(15);	
-			test();
-			tick();
+			//test();
+			//tick();
 			break;
 
 		default:
 			break;	
 	}
-	ledOn(1<<1);
+//	ledOn(1<<1);
 
 	vTaskDelay(50 / portTICK_RATE_MS);
 }
@@ -465,7 +465,7 @@ int main( void )
   initDisplay();
   initiate();
   
-	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
+	//TaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
   xTaskCreate(autoMoveTask, "tick", 100, NULL, 1, NULL);
