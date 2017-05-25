@@ -399,7 +399,7 @@ void GLCD_drawChar(unsigned int x, unsigned int y, unsigned short *c) {
   wr_reg(0x20, Xaddress);
   wr_reg(0x21, y);
   
-  for(index = 0; index < 24; index++)
+  for(index = 0; index < 16; index++)
   {
     wr_cmd(0x22);              /* Prepare to write GRAM */
     for(i = 15; i >= 0; i--)

@@ -32,7 +32,7 @@ volatile int length;
 volatile int STAT;
 
 //Variables to manage the speed of the game
-volatile int WAIT = 300;
+volatile int WAIT = 250;
 const int timeStep = 10;
 
 //Functions to set directions of the snake movement.
@@ -106,8 +106,8 @@ void printSpriteXY(int x, int y, unsigned short * sprite) {
 
 	for (j=(y * SPRITE_DIM_Y); j<((y * SPRITE_DIM_Y) + SPRITE_DIM_Y);j++ ){
 		for (i=(x * SPRITE_DIM_X); i<((x * SPRITE_DIM_X) + SPRITE_DIM_X);i++ ){
-			GLCD_setTextColor(sprite[++k]);
-			GLCD_putPixel(j, SCREEN_WIDTH - i);
+			GLCD_setTextColor(sprite[k++]);
+			GLCD_putPixel(j, SCREEN_WIDTH - i-1);
 			//vTaskDelay(5 / portTICK_RATE_MS);
 		}
 	}
@@ -183,7 +183,7 @@ static void ledTask(void *params) {
 void exitGame(int stat) {
 	STAT = stat;
   //gotoxy(0, MAX_Y+3);
-  printf("%03d: ", stat);
+  //printf("%03d: ", stat);
   switch (stat) {
     case ERR       : printf("Some fatal error occurred"); break;
     case WIN       : printf("Congratulations! You won!"); break;
@@ -243,9 +243,9 @@ void generateApple() {
   apple = setXY(x,y);
   setContent(apple, APPLE);
 	
-	WAIT = WAIT - timeStep;
+	WAIT = WAIT - WAIT*timeStep/100;
 	
-	printf("(%2d, %2d)\n", x, y);
+	//printf("(%2d, %2d)\n", x, y);
   updateScreen(apple);
 }
 
@@ -345,15 +345,18 @@ void tick(){
 	if(new_y < 0)
 		new_y = my + new_y;
   head = setXY(new_x, new_y);
-  
+	
+	
   switch (getContent(head)){
     case APPLE :
       length++;
-      generateApple();     
       //setHeadwardCoord(headOld, head);
       setContent(headOld, BODY);
       setContent(head, HEAD);
       setTailwardCoord(head, headOld);
+      generateApple();     
+			updateScreen(headOld);
+			updateScreen(apple);
       break;
     case BODY  : exitGame(GAME_OVER);
     case TAIL  :
@@ -372,12 +375,15 @@ void tick(){
 			exitGame(__LINE__);	
 //			printBoardPos(head);
   }
-  updateScreen(head);
-  updateScreen(headOld);
+	//updateScreen(headOld);
+  //updateScreen(head);
 	//printBoardPos(head);
-  updateScreen(tailOld);
-  updateScreen(tail);
+  //updateScreen(tail);
+	
+	printSnake();
 	updateScreen(apple);
+	updateScreen(tailOld);
+ 
 }
 
 
@@ -435,6 +441,7 @@ void autoMoveTask(void *params){
 		tick();
 		//ledOn(1<<2);
 		wait(WAIT);
+		//printCharXY(0,0,'#');
 	}
 	
 	while (1) {;};
@@ -502,14 +509,14 @@ int main( void )
   initiate();
   
 	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
-  xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
+  //xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
   xTaskCreate(autoMoveTask, "tick", 100, NULL, 5, NULL);
   
 	//xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   //xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
-  printf("%d/%d", MAX_X, MAX_Y);  // this is redirected to the display
+  //printf("%d/%d", MAX_X, MAX_Y);  // this is redirected to the display
 
   vTaskStartScheduler();
 
