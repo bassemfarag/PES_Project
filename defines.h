@@ -12,9 +12,9 @@
 #define SCREEN_WIDTH        320
 #define SCREEN_HEIGHT       240
 #define SPRITE_DIM_X        16
-#define SPRITE_DIM_Y        24
+#define SPRITE_DIM_Y        16
 #define MAX_X               (SCREEN_WIDTH  / SPRITE_DIM_X)
-#define MAX_Y               (SCREEN_HEIGHT / SPRITE_DIM_Y)-1
+#define MAX_Y               (SCREEN_HEIGHT / SPRITE_DIM_Y)-2
 
 //Snake start Length
 #define LENGTH_START        4

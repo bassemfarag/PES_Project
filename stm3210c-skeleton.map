@@ -31,12 +31,12 @@ Section Cross References
     main.o(.text) refers to queue.o(.text) for xQueueGenericReceive
     main.o(.text) refers to glcd.o(.text) for GLCD_displayChar
     main.o(.text) refers to setup.o(.text) for LED_out
+    main.o(.text) refers to tasks.o(.text) for vTaskDelay
     main.o(.text) refers to printf6.o(i.__0printf$6) for __2printf
     main.o(.text) refers to main.o(.data) for .data
     main.o(.text) refers to main.o(.bss) for .bss
     main.o(.text) refers to rand.o(.text) for rand
     main.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy4
-    main.o(.text) refers to tasks.o(.text) for xTaskGetTickCount
     main.o(.text) refers to stm3210c_eval_ioe.o(.text) for IOE_JoyStickGetState
     heap_2.o(.text) refers to tasks.o(.text) for vTaskSuspendAll
     heap_2.o(.text) refers to heap_2.o(.data) for .data
@@ -340,14 +340,14 @@ Removing Unused input sections from the image.
     Removing main.o(.data), (512 bytes).
     Removing main.o(.data), (512 bytes).
     Removing main.o(.data), (512 bytes).
-    Removing main.o(.data), (512 bytes).
     Removing main.o(.data), (240 bytes).
+    Removing main.o(.data), (4 bytes).
     Removing dadd.o(.text), (334 bytes).
     Removing ddiv.o(.text), (222 bytes).
     Removing dfixul.o(.text), (48 bytes).
     Removing cdrcmple.o(.text), (48 bytes).
 
-12 unused section(s) (total 5454 bytes) removed from the image.
+12 unused section(s) (total 4946 bytes) removed from the image.
 
 ==============================================================================
 
@@ -460,50 +460,50 @@ Image Symbol Table
     wr_reg                                   0x08001e9f   Thumb Code    16  glcd.o(.text)
     .text                                    0x08001ed4   Section        0  setup.o(.text)
     .text                                    0x08002064   Section        0  main.o(.text)
-    ledOn                                    0x08002247   Thumb Code     4  main.o(.text)
-    initDisplay                              0x08002279   Thumb Code    34  main.o(.text)
-    printTask                                0x080026a5   Thumb Code   110  main.o(.text)
-    .text                                    0x08002978   Section        0  heap_2.o(.text)
-    .text                                    0x08002a70   Section        0  list.o(.text)
-    .text                                    0x08002afc   Section        0  port.o(.text)
-    prvSetupTimerInterrupt                   0x08002b11   Thumb Code    14  port.o(.text)
-    .text                                    0x08002b9c   Section        0  queue.o(.text)
-    prvUnlockQueue                           0x08002bfd   Thumb Code   100  queue.o(.text)
-    prvIsQueueFull                           0x08002c61   Thumb Code    30  queue.o(.text)
-    prvCopyDataToQueue                       0x08002c7f   Thumb Code    92  queue.o(.text)
-    prvIsQueueEmpty                          0x08002e39   Thumb Code    26  queue.o(.text)
-    prvCopyDataFromQueue                     0x08002e53   Thumb Code    40  queue.o(.text)
-    .text                                    0x08003014   Section        0  tasks.o(.text)
-    prvInitialiseTaskLists                   0x08003015   Thumb Code    78  tasks.o(.text)
-    prvInitialiseTCBVariables                0x08003063   Thumb Code    58  tasks.o(.text)
-    prvAllocateTCBAndStack                   0x0800309d   Thumb Code    56  tasks.o(.text)
-    prvDeleteTCB                             0x08003605   Thumb Code    20  tasks.o(.text)
-    prvCheckTasksWaitingTermination          0x08003619   Thumb Code    84  tasks.o(.text)
-    prvIdleTask                              0x0800366d   Thumb Code    18  tasks.o(.text)
-    .text                                    0x080038bc   Section        0  rand.o(.text)
-    .text                                    0x080038e0   Section        0  memcpya.o(.text)
-    .text                                    0x08003904   Section        0  memseta.o(.text)
-    .text                                    0x08003928   Section        0  strncpy.o(.text)
-    .text                                    0x08003940   Section        0  dmul.o(.text)
-    .text                                    0x08003a24   Section        0  dflti.o(.text)
-    .text                                    0x08003a46   Section        0  dfixui.o(.text)
-    .text                                    0x08003a78   Section        0  uidiv.o(.text)
-    .text                                    0x08003aa4   Section        0  llushr.o(.text)
-    .text                                    0x08003ac4   Section        0  depilogue.o(.text)
-    .text                                    0x08003ac4   Section        0  iusefp.o(.text)
-    .text                                    0x08003b80   Section       36  init.o(.text)
-    .text                                    0x08003ba4   Section        0  llshl.o(.text)
-    .text                                    0x08003bc2   Section        0  __dclz77c.o(.text)
-    i.__0printf$6                            0x08003c20   Section        0  printf6.o(i.__0printf$6)
-    i.__scatterload_copy                     0x08003c40   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x08003c4e   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x08003c50   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i._printf_core                           0x08003c60   Section        0  printf6.o(i._printf_core)
-    _printf_core                             0x08003c61   Thumb Code   748  printf6.o(i._printf_core)
-    i._printf_post_padding                   0x08003f50   Section        0  printf6.o(i._printf_post_padding)
-    _printf_post_padding                     0x08003f51   Thumb Code    36  printf6.o(i._printf_post_padding)
-    i._printf_pre_padding                    0x08003f74   Section        0  printf6.o(i._printf_pre_padding)
-    _printf_pre_padding                      0x08003f75   Thumb Code    46  printf6.o(i._printf_pre_padding)
+    initDisplay                              0x0800232f   Thumb Code    34  main.o(.text)
+    ledTask                                  0x08002351   Thumb Code    26  main.o(.text)
+    printTask                                0x08002643   Thumb Code   110  main.o(.text)
+    .text                                    0x08002920   Section        0  heap_2.o(.text)
+    .text                                    0x08002a18   Section        0  list.o(.text)
+    .text                                    0x08002aa4   Section        0  port.o(.text)
+    prvSetupTimerInterrupt                   0x08002ab9   Thumb Code    14  port.o(.text)
+    .text                                    0x08002b44   Section        0  queue.o(.text)
+    prvUnlockQueue                           0x08002ba5   Thumb Code   100  queue.o(.text)
+    prvIsQueueFull                           0x08002c09   Thumb Code    30  queue.o(.text)
+    prvCopyDataToQueue                       0x08002c27   Thumb Code    92  queue.o(.text)
+    prvIsQueueEmpty                          0x08002de1   Thumb Code    26  queue.o(.text)
+    prvCopyDataFromQueue                     0x08002dfb   Thumb Code    40  queue.o(.text)
+    .text                                    0x08002fbc   Section        0  tasks.o(.text)
+    prvInitialiseTaskLists                   0x08002fbd   Thumb Code    78  tasks.o(.text)
+    prvInitialiseTCBVariables                0x0800300b   Thumb Code    58  tasks.o(.text)
+    prvAllocateTCBAndStack                   0x08003045   Thumb Code    56  tasks.o(.text)
+    prvDeleteTCB                             0x080035ad   Thumb Code    20  tasks.o(.text)
+    prvCheckTasksWaitingTermination          0x080035c1   Thumb Code    84  tasks.o(.text)
+    prvIdleTask                              0x08003615   Thumb Code    18  tasks.o(.text)
+    .text                                    0x08003864   Section        0  rand.o(.text)
+    .text                                    0x08003888   Section        0  memcpya.o(.text)
+    .text                                    0x080038ac   Section        0  memseta.o(.text)
+    .text                                    0x080038d0   Section        0  strncpy.o(.text)
+    .text                                    0x080038e8   Section        0  dmul.o(.text)
+    .text                                    0x080039cc   Section        0  dflti.o(.text)
+    .text                                    0x080039ee   Section        0  dfixui.o(.text)
+    .text                                    0x08003a20   Section        0  uidiv.o(.text)
+    .text                                    0x08003a4c   Section        0  llushr.o(.text)
+    .text                                    0x08003a6c   Section        0  depilogue.o(.text)
+    .text                                    0x08003a6c   Section        0  iusefp.o(.text)
+    .text                                    0x08003b28   Section       36  init.o(.text)
+    .text                                    0x08003b4c   Section        0  llshl.o(.text)
+    .text                                    0x08003b6a   Section        0  __dclz77c.o(.text)
+    i.__0printf$6                            0x08003bc8   Section        0  printf6.o(i.__0printf$6)
+    i.__scatterload_copy                     0x08003be8   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x08003bf6   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x08003bf8   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i._printf_core                           0x08003c08   Section        0  printf6.o(i._printf_core)
+    _printf_core                             0x08003c09   Thumb Code   748  printf6.o(i._printf_core)
+    i._printf_post_padding                   0x08003ef8   Section        0  printf6.o(i._printf_post_padding)
+    _printf_post_padding                     0x08003ef9   Thumb Code    36  printf6.o(i._printf_post_padding)
+    i._printf_pre_padding                    0x08003f1c   Section        0  printf6.o(i._printf_pre_padding)
+    _printf_pre_padding                      0x08003f1d   Thumb Code    46  printf6.o(i._printf_pre_padding)
     .data                                    0x20000000   Section       20  system_stm32f10x_cl.o(.data)
     .data                                    0x20000014   Section       20  stm32f10x_rcc.o(.data)
     ADCPrescTable                            0x20000014   Data           4  stm32f10x_rcc.o(.data)
@@ -516,42 +516,42 @@ Image Symbol Table
     TextColor                                0x20000040   Data           2  glcd.o(.data)
     BackColor                                0x20000042   Data           2  glcd.o(.data)
     driverCode                               0x20000044   Data           2  glcd.o(.data)
-    .data                                    0x20001548   Section       40  main.o(.data)
-    .data                                    0x20001570   Section       24  heap_2.o(.data)
-    xFreeBytesRemaining                      0x20001570   Data           4  heap_2.o(.data)
-    xHeapHasBeenInitialised                  0x20001574   Data           4  heap_2.o(.data)
-    xStart                                   0x20001578   Data           8  heap_2.o(.data)
-    xEnd                                     0x20001580   Data           8  heap_2.o(.data)
-    .data                                    0x20001588   Section        4  port.o(.data)
-    uxCriticalNesting                        0x20001588   Data           4  port.o(.data)
-    .data                                    0x2000158c   Section       56  tasks.o(.data)
-    uxTasksDeleted                           0x20001590   Data           4  tasks.o(.data)
-    uxCurrentNumberOfTasks                   0x20001594   Data           4  tasks.o(.data)
-    xTickCount                               0x20001598   Data           4  tasks.o(.data)
-    uxTopUsedPriority                        0x2000159c   Data           4  tasks.o(.data)
-    uxTopReadyPriority                       0x200015a0   Data           4  tasks.o(.data)
-    xSchedulerRunning                        0x200015a4   Data           4  tasks.o(.data)
-    uxSchedulerSuspended                     0x200015a8   Data           4  tasks.o(.data)
-    uxMissedTicks                            0x200015ac   Data           4  tasks.o(.data)
-    xMissedYield                             0x200015b0   Data           4  tasks.o(.data)
-    xNumOfOverflows                          0x200015b4   Data           4  tasks.o(.data)
-    uxTaskNumber                             0x200015b8   Data           4  tasks.o(.data)
-    pxDelayedTaskList                        0x200015bc   Data           4  tasks.o(.data)
-    pxOverflowDelayedTaskList                0x200015c0   Data           4  tasks.o(.data)
-    .data                                    0x200015c4   Section        4  rand.o(.data)
-    _rand_state                              0x200015c4   Data           4  rand.o(.data)
-    .data                                    0x200015c8   Section        4  stdout.o(.data)
-    .bss                                     0x200015cc   Section     2160  main.o(.bss)
-    .bss                                     0x20001e40   Section    56320  heap_2.o(.bss)
-    xHeap                                    0x20001e40   Data       56320  heap_2.o(.bss)
-    .bss                                     0x2000fa40   Section      200  tasks.o(.bss)
-    pxReadyTasksLists                        0x2000fa40   Data         100  tasks.o(.bss)
-    xDelayedTaskList1                        0x2000faa4   Data          20  tasks.o(.bss)
-    xDelayedTaskList2                        0x2000fab8   Data          20  tasks.o(.bss)
-    xPendingReadyList                        0x2000facc   Data          20  tasks.o(.bss)
-    xTasksWaitingTermination                 0x2000fae0   Data          20  tasks.o(.bss)
-    xSuspendedTaskList                       0x2000faf4   Data          20  tasks.o(.bss)
-    STACK                                    0x2000fb08   Section      512  stm32f10x.o(STACK)
+    .data                                    0x20001548   Section      552  main.o(.data)
+    .data                                    0x20001770   Section       24  heap_2.o(.data)
+    xFreeBytesRemaining                      0x20001770   Data           4  heap_2.o(.data)
+    xHeapHasBeenInitialised                  0x20001774   Data           4  heap_2.o(.data)
+    xStart                                   0x20001778   Data           8  heap_2.o(.data)
+    xEnd                                     0x20001780   Data           8  heap_2.o(.data)
+    .data                                    0x20001788   Section        4  port.o(.data)
+    uxCriticalNesting                        0x20001788   Data           4  port.o(.data)
+    .data                                    0x2000178c   Section       56  tasks.o(.data)
+    uxTasksDeleted                           0x20001790   Data           4  tasks.o(.data)
+    uxCurrentNumberOfTasks                   0x20001794   Data           4  tasks.o(.data)
+    xTickCount                               0x20001798   Data           4  tasks.o(.data)
+    uxTopUsedPriority                        0x2000179c   Data           4  tasks.o(.data)
+    uxTopReadyPriority                       0x200017a0   Data           4  tasks.o(.data)
+    xSchedulerRunning                        0x200017a4   Data           4  tasks.o(.data)
+    uxSchedulerSuspended                     0x200017a8   Data           4  tasks.o(.data)
+    uxMissedTicks                            0x200017ac   Data           4  tasks.o(.data)
+    xMissedYield                             0x200017b0   Data           4  tasks.o(.data)
+    xNumOfOverflows                          0x200017b4   Data           4  tasks.o(.data)
+    uxTaskNumber                             0x200017b8   Data           4  tasks.o(.data)
+    pxDelayedTaskList                        0x200017bc   Data           4  tasks.o(.data)
+    pxOverflowDelayedTaskList                0x200017c0   Data           4  tasks.o(.data)
+    .data                                    0x200017c4   Section        4  rand.o(.data)
+    _rand_state                              0x200017c4   Data           4  rand.o(.data)
+    .data                                    0x200017c8   Section        4  stdout.o(.data)
+    .bss                                     0x200017cc   Section     2080  main.o(.bss)
+    .bss                                     0x20001ff0   Section    56320  heap_2.o(.bss)
+    xHeap                                    0x20001ff0   Data       56320  heap_2.o(.bss)
+    .bss                                     0x2000fbf0   Section      200  tasks.o(.bss)
+    pxReadyTasksLists                        0x2000fbf0   Data         100  tasks.o(.bss)
+    xDelayedTaskList1                        0x2000fc54   Data          20  tasks.o(.bss)
+    xDelayedTaskList2                        0x2000fc68   Data          20  tasks.o(.bss)
+    xPendingReadyList                        0x2000fc7c   Data          20  tasks.o(.bss)
+    xTasksWaitingTermination                 0x2000fc90   Data          20  tasks.o(.bss)
+    xSuspendedTaskList                       0x2000fca4   Data          20  tasks.o(.bss)
+    STACK                                    0x2000fcb8   Section      512  stm32f10x.o(STACK)
 
     Global Symbols
 
@@ -829,120 +829,119 @@ Image Symbol Table
     setX                                     0x080020c3   Thumb Code    22  main.o(.text)
     setY                                     0x080020d9   Thumb Code    22  main.o(.text)
     setXY                                    0x080020ef   Thumb Code    14  main.o(.text)
-    getContent                               0x080020fd   Thumb Code    32  main.o(.text)
-    setContent                               0x0800211d   Thumb Code    34  main.o(.text)
-    getHeadward                              0x0800213f   Thumb Code    32  main.o(.text)
-    setHeadward                              0x0800215f   Thumb Code    16  main.o(.text)
-    setHeadwardCoord                         0x0800216f   Thumb Code    34  main.o(.text)
-    getTailward                              0x08002191   Thumb Code    32  main.o(.text)
-    setTailward                              0x080021b1   Thumb Code    16  main.o(.text)
-    setTailwardCoord                         0x080021c1   Thumb Code    34  main.o(.text)
-    printCharXY                              0x080021e3   Thumb Code    64  main.o(.text)
-    updateScreen                             0x08002223   Thumb Code    36  main.o(.text)
-    clearScreen                              0x0800224b   Thumb Code    46  main.o(.text)
-    exitGame                                 0x0800229b   Thumb Code    78  main.o(.text)
-    printBoardPos                            0x080022e9   Thumb Code   304  main.o(.text)
-    printSnake                               0x08002419   Thumb Code    28  main.o(.text)
-    printBoard                               0x08002435   Thumb Code   316  main.o(.text)
-    generateApple                            0x08002571   Thumb Code    90  main.o(.text)
-    initiate                                 0x080025cb   Thumb Code   218  main.o(.text)
-    tick                                     0x08002713   Thumb Code   256  main.o(.text)
-    fputc                                    0x08002813   Thumb Code    24  main.o(.text)
-    wait                                     0x0800282b   Thumb Code    10  main.o(.text)
-    autoMoveTask                             0x08002835   Thumb Code    26  main.o(.text)
-    Joy_stick                                0x0800284f   Thumb Code    98  main.o(.text)
-    main                                     0x080028b1   Thumb Code   124  main.o(.text)
-    pvPortMalloc                             0x08002979   Thumb Code   172  heap_2.o(.text)
-    vPortFree                                0x08002a25   Thumb Code    58  heap_2.o(.text)
-    xPortGetFreeHeapSize                     0x08002a5f   Thumb Code     6  heap_2.o(.text)
-    vPortInitialiseBlocks                    0x08002a65   Thumb Code     2  heap_2.o(.text)
-    vListInitialise                          0x08002a71   Thumb Code    22  list.o(.text)
-    vListInitialiseItem                      0x08002a87   Thumb Code     6  list.o(.text)
-    vListInsertEnd                           0x08002a8d   Thumb Code    28  list.o(.text)
-    vListInsert                              0x08002aa9   Thumb Code    48  list.o(.text)
-    vListRemove                              0x08002ad9   Thumb Code    36  list.o(.text)
-    pxPortInitialiseStack                    0x08002afd   Thumb Code    20  port.o(.text)
-    xPortStartScheduler                      0x08002b1f   Thumb Code    38  port.o(.text)
-    vPortEndScheduler                        0x08002b45   Thumb Code     2  port.o(.text)
-    vPortYieldFromISR                        0x08002b47   Thumb Code    12  port.o(.text)
-    vPortEnterCritical                       0x08002b53   Thumb Code    16  port.o(.text)
-    vPortExitCritical                        0x08002b63   Thumb Code    18  port.o(.text)
-    xPortSysTickHandler                      0x08002b75   Thumb Code    28  port.o(.text)
-    xQueueCreate                             0x08002b9d   Thumb Code    96  queue.o(.text)
-    xQueueGenericSend                        0x08002cdb   Thumb Code   200  queue.o(.text)
-    xQueueCreateMutex                        0x08002da3   Thumb Code    68  queue.o(.text)
-    xQueueGenericSendFromISR                 0x08002de7   Thumb Code    82  queue.o(.text)
-    xQueueGenericReceive                     0x08002e7b   Thumb Code   260  queue.o(.text)
-    xQueueReceiveFromISR                     0x08002f7f   Thumb Code    78  queue.o(.text)
-    uxQueueMessagesWaiting                   0x08002fcd   Thumb Code    18  queue.o(.text)
-    uxQueueMessagesWaitingFromISR            0x08002fdf   Thumb Code     4  queue.o(.text)
-    vQueueDelete                             0x08002fe3   Thumb Code    20  queue.o(.text)
-    xQueueIsQueueEmptyFromISR                0x08002ff7   Thumb Code    14  queue.o(.text)
-    xQueueIsQueueFullFromISR                 0x08003005   Thumb Code    16  queue.o(.text)
-    xTaskGenericCreate                       0x080030d5   Thumb Code   206  tasks.o(.text)
-    vTaskDelete                              0x080031a3   Thumb Code    90  tasks.o(.text)
-    vTaskIncrementTick                       0x080031fd   Thumb Code   118  tasks.o(.text)
-    xTaskResumeAll                           0x08003273   Thumb Code   166  tasks.o(.text)
-    vTaskSuspendAll                          0x08003319   Thumb Code    10  tasks.o(.text)
-    vTaskDelayUntil                          0x08003323   Thumb Code   112  tasks.o(.text)
-    vTaskDelay                               0x08003393   Thumb Code    78  tasks.o(.text)
-    uxTaskPriorityGet                        0x080033e1   Thumb Code    32  tasks.o(.text)
-    vTaskPrioritySet                         0x08003401   Thumb Code   146  tasks.o(.text)
-    vTaskSwitchContext                       0x08003493   Thumb Code    74  tasks.o(.text)
-    vTaskSuspend                             0x080034dd   Thumb Code    92  tasks.o(.text)
-    xTaskIsTaskSuspended                     0x08003539   Thumb Code    30  tasks.o(.text)
-    vTaskResume                              0x08003557   Thumb Code    86  tasks.o(.text)
-    xTaskResumeFromISR                       0x080035ad   Thumb Code    88  tasks.o(.text)
-    vTaskStartScheduler                      0x0800367f   Thumb Code    50  tasks.o(.text)
-    vTaskEndScheduler                        0x080036b1   Thumb Code    20  tasks.o(.text)
-    xTaskGetTickCount                        0x080036c5   Thumb Code    18  tasks.o(.text)
-    xTaskGetTickCountFromISR                 0x080036d7   Thumb Code     6  tasks.o(.text)
-    uxTaskGetNumberOfTasks                   0x080036dd   Thumb Code     6  tasks.o(.text)
-    vTaskPlaceOnEventList                    0x080036e3   Thumb Code    84  tasks.o(.text)
-    xTaskRemoveFromEventList                 0x08003737   Thumb Code    94  tasks.o(.text)
-    vTaskSetTimeOutState                     0x08003795   Thumb Code    12  tasks.o(.text)
-    xTaskCheckForTimeOut                     0x080037a1   Thumb Code    80  tasks.o(.text)
-    vTaskMissedYield                         0x080037f1   Thumb Code     8  tasks.o(.text)
-    xTaskGetCurrentTaskHandle                0x080037f9   Thumb Code     6  tasks.o(.text)
-    vTaskPriorityInherit                     0x080037ff   Thumb Code   114  tasks.o(.text)
-    vTaskPriorityDisinherit                  0x08003871   Thumb Code    66  tasks.o(.text)
-    rand                                     0x080038bd   Thumb Code    20  rand.o(.text)
-    srand                                    0x080038d1   Thumb Code     6  rand.o(.text)
-    __aeabi_memcpy                           0x080038e1   Thumb Code    36  memcpya.o(.text)
-    __aeabi_memcpy4                          0x080038e1   Thumb Code     0  memcpya.o(.text)
-    __aeabi_memcpy8                          0x080038e1   Thumb Code     0  memcpya.o(.text)
-    __aeabi_memset                           0x08003905   Thumb Code    14  memseta.o(.text)
-    __aeabi_memset4                          0x08003905   Thumb Code     0  memseta.o(.text)
-    __aeabi_memset8                          0x08003905   Thumb Code     0  memseta.o(.text)
-    __aeabi_memclr                           0x08003913   Thumb Code     4  memseta.o(.text)
-    __aeabi_memclr4                          0x08003913   Thumb Code     0  memseta.o(.text)
-    __aeabi_memclr8                          0x08003913   Thumb Code     0  memseta.o(.text)
-    _memset$wrapper                          0x08003917   Thumb Code    18  memseta.o(.text)
-    strncpy                                  0x08003929   Thumb Code    24  strncpy.o(.text)
-    __aeabi_dmul                             0x08003941   Thumb Code   228  dmul.o(.text)
-    __aeabi_i2d                              0x08003a25   Thumb Code    34  dflti.o(.text)
-    __aeabi_d2uiz                            0x08003a47   Thumb Code    50  dfixui.o(.text)
-    __aeabi_uidiv                            0x08003a79   Thumb Code     0  uidiv.o(.text)
-    __aeabi_uidivmod                         0x08003a79   Thumb Code    44  uidiv.o(.text)
-    __aeabi_llsr                             0x08003aa5   Thumb Code    32  llushr.o(.text)
-    _ll_ushift_r                             0x08003aa5   Thumb Code     0  llushr.o(.text)
-    __I$use$fp                               0x08003ac5   Thumb Code     0  iusefp.o(.text)
-    _double_round                            0x08003ac5   Thumb Code    30  depilogue.o(.text)
-    _double_epilogue                         0x08003ae3   Thumb Code   156  depilogue.o(.text)
-    __scatterload                            0x08003b81   Thumb Code    28  init.o(.text)
-    __scatterload_rt2                        0x08003b81   Thumb Code     0  init.o(.text)
-    __aeabi_llsl                             0x08003ba5   Thumb Code    30  llshl.o(.text)
-    _ll_shift_l                              0x08003ba5   Thumb Code     0  llshl.o(.text)
-    __decompress                             0x08003bc3   Thumb Code     0  __dclz77c.o(.text)
-    __decompress2                            0x08003bc3   Thumb Code    94  __dclz77c.o(.text)
-    __0printf$6                              0x08003c21   Thumb Code    22  printf6.o(i.__0printf$6)
-    __1printf$6                              0x08003c21   Thumb Code     0  printf6.o(i.__0printf$6)
-    __2printf                                0x08003c21   Thumb Code     0  printf6.o(i.__0printf$6)
-    __scatterload_copy                       0x08003c41   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x08003c4f   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x08003c51   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    Region$$Table$$Base                      0x08003fa4   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08003fc4   Number         0  anon$$obj.o(Region$$Table)
+    getContent                               0x080020fd   Thumb Code    36  main.o(.text)
+    setContent                               0x08002121   Thumb Code    38  main.o(.text)
+    getTailward                              0x08002147   Thumb Code    36  main.o(.text)
+    setTailward                              0x0800216b   Thumb Code    20  main.o(.text)
+    setTailwardCoord                         0x0800217f   Thumb Code    38  main.o(.text)
+    getTailnew                               0x080021a5   Thumb Code    22  main.o(.text)
+    printCharXY                              0x080021bb   Thumb Code    60  main.o(.text)
+    printSpriteXY                            0x080021f7   Thumb Code    86  main.o(.text)
+    updateScreen                             0x0800224d   Thumb Code   180  main.o(.text)
+    clearScreen                              0x08002301   Thumb Code    46  main.o(.text)
+    exitGame                                 0x0800236b   Thumb Code    78  main.o(.text)
+    printBoardPos                            0x080023b9   Thumb Code   120  main.o(.text)
+    printSnake                               0x08002431   Thumb Code   204  main.o(.text)
+    printBoard                               0x080024fd   Thumb Code    36  main.o(.text)
+    generateApple                            0x08002521   Thumb Code   114  main.o(.text)
+    initiate                                 0x08002593   Thumb Code   176  main.o(.text)
+    tick                                     0x080026b1   Thumb Code   232  main.o(.text)
+    fputc                                    0x08002799   Thumb Code    24  main.o(.text)
+    wait                                     0x080027b1   Thumb Code    10  main.o(.text)
+    autoMoveTask                             0x080027bb   Thumb Code    22  main.o(.text)
+    Joy_stick                                0x080027d1   Thumb Code    98  main.o(.text)
+    main                                     0x08002833   Thumb Code   150  main.o(.text)
+    pvPortMalloc                             0x08002921   Thumb Code   172  heap_2.o(.text)
+    vPortFree                                0x080029cd   Thumb Code    58  heap_2.o(.text)
+    xPortGetFreeHeapSize                     0x08002a07   Thumb Code     6  heap_2.o(.text)
+    vPortInitialiseBlocks                    0x08002a0d   Thumb Code     2  heap_2.o(.text)
+    vListInitialise                          0x08002a19   Thumb Code    22  list.o(.text)
+    vListInitialiseItem                      0x08002a2f   Thumb Code     6  list.o(.text)
+    vListInsertEnd                           0x08002a35   Thumb Code    28  list.o(.text)
+    vListInsert                              0x08002a51   Thumb Code    48  list.o(.text)
+    vListRemove                              0x08002a81   Thumb Code    36  list.o(.text)
+    pxPortInitialiseStack                    0x08002aa5   Thumb Code    20  port.o(.text)
+    xPortStartScheduler                      0x08002ac7   Thumb Code    38  port.o(.text)
+    vPortEndScheduler                        0x08002aed   Thumb Code     2  port.o(.text)
+    vPortYieldFromISR                        0x08002aef   Thumb Code    12  port.o(.text)
+    vPortEnterCritical                       0x08002afb   Thumb Code    16  port.o(.text)
+    vPortExitCritical                        0x08002b0b   Thumb Code    18  port.o(.text)
+    xPortSysTickHandler                      0x08002b1d   Thumb Code    28  port.o(.text)
+    xQueueCreate                             0x08002b45   Thumb Code    96  queue.o(.text)
+    xQueueGenericSend                        0x08002c83   Thumb Code   200  queue.o(.text)
+    xQueueCreateMutex                        0x08002d4b   Thumb Code    68  queue.o(.text)
+    xQueueGenericSendFromISR                 0x08002d8f   Thumb Code    82  queue.o(.text)
+    xQueueGenericReceive                     0x08002e23   Thumb Code   260  queue.o(.text)
+    xQueueReceiveFromISR                     0x08002f27   Thumb Code    78  queue.o(.text)
+    uxQueueMessagesWaiting                   0x08002f75   Thumb Code    18  queue.o(.text)
+    uxQueueMessagesWaitingFromISR            0x08002f87   Thumb Code     4  queue.o(.text)
+    vQueueDelete                             0x08002f8b   Thumb Code    20  queue.o(.text)
+    xQueueIsQueueEmptyFromISR                0x08002f9f   Thumb Code    14  queue.o(.text)
+    xQueueIsQueueFullFromISR                 0x08002fad   Thumb Code    16  queue.o(.text)
+    xTaskGenericCreate                       0x0800307d   Thumb Code   206  tasks.o(.text)
+    vTaskDelete                              0x0800314b   Thumb Code    90  tasks.o(.text)
+    vTaskIncrementTick                       0x080031a5   Thumb Code   118  tasks.o(.text)
+    xTaskResumeAll                           0x0800321b   Thumb Code   166  tasks.o(.text)
+    vTaskSuspendAll                          0x080032c1   Thumb Code    10  tasks.o(.text)
+    vTaskDelayUntil                          0x080032cb   Thumb Code   112  tasks.o(.text)
+    vTaskDelay                               0x0800333b   Thumb Code    78  tasks.o(.text)
+    uxTaskPriorityGet                        0x08003389   Thumb Code    32  tasks.o(.text)
+    vTaskPrioritySet                         0x080033a9   Thumb Code   146  tasks.o(.text)
+    vTaskSwitchContext                       0x0800343b   Thumb Code    74  tasks.o(.text)
+    vTaskSuspend                             0x08003485   Thumb Code    92  tasks.o(.text)
+    xTaskIsTaskSuspended                     0x080034e1   Thumb Code    30  tasks.o(.text)
+    vTaskResume                              0x080034ff   Thumb Code    86  tasks.o(.text)
+    xTaskResumeFromISR                       0x08003555   Thumb Code    88  tasks.o(.text)
+    vTaskStartScheduler                      0x08003627   Thumb Code    50  tasks.o(.text)
+    vTaskEndScheduler                        0x08003659   Thumb Code    20  tasks.o(.text)
+    xTaskGetTickCount                        0x0800366d   Thumb Code    18  tasks.o(.text)
+    xTaskGetTickCountFromISR                 0x0800367f   Thumb Code     6  tasks.o(.text)
+    uxTaskGetNumberOfTasks                   0x08003685   Thumb Code     6  tasks.o(.text)
+    vTaskPlaceOnEventList                    0x0800368b   Thumb Code    84  tasks.o(.text)
+    xTaskRemoveFromEventList                 0x080036df   Thumb Code    94  tasks.o(.text)
+    vTaskSetTimeOutState                     0x0800373d   Thumb Code    12  tasks.o(.text)
+    xTaskCheckForTimeOut                     0x08003749   Thumb Code    80  tasks.o(.text)
+    vTaskMissedYield                         0x08003799   Thumb Code     8  tasks.o(.text)
+    xTaskGetCurrentTaskHandle                0x080037a1   Thumb Code     6  tasks.o(.text)
+    vTaskPriorityInherit                     0x080037a7   Thumb Code   114  tasks.o(.text)
+    vTaskPriorityDisinherit                  0x08003819   Thumb Code    66  tasks.o(.text)
+    rand                                     0x08003865   Thumb Code    20  rand.o(.text)
+    srand                                    0x08003879   Thumb Code     6  rand.o(.text)
+    __aeabi_memcpy                           0x08003889   Thumb Code    36  memcpya.o(.text)
+    __aeabi_memcpy4                          0x08003889   Thumb Code     0  memcpya.o(.text)
+    __aeabi_memcpy8                          0x08003889   Thumb Code     0  memcpya.o(.text)
+    __aeabi_memset                           0x080038ad   Thumb Code    14  memseta.o(.text)
+    __aeabi_memset4                          0x080038ad   Thumb Code     0  memseta.o(.text)
+    __aeabi_memset8                          0x080038ad   Thumb Code     0  memseta.o(.text)
+    __aeabi_memclr                           0x080038bb   Thumb Code     4  memseta.o(.text)
+    __aeabi_memclr4                          0x080038bb   Thumb Code     0  memseta.o(.text)
+    __aeabi_memclr8                          0x080038bb   Thumb Code     0  memseta.o(.text)
+    _memset$wrapper                          0x080038bf   Thumb Code    18  memseta.o(.text)
+    strncpy                                  0x080038d1   Thumb Code    24  strncpy.o(.text)
+    __aeabi_dmul                             0x080038e9   Thumb Code   228  dmul.o(.text)
+    __aeabi_i2d                              0x080039cd   Thumb Code    34  dflti.o(.text)
+    __aeabi_d2uiz                            0x080039ef   Thumb Code    50  dfixui.o(.text)
+    __aeabi_uidiv                            0x08003a21   Thumb Code     0  uidiv.o(.text)
+    __aeabi_uidivmod                         0x08003a21   Thumb Code    44  uidiv.o(.text)
+    __aeabi_llsr                             0x08003a4d   Thumb Code    32  llushr.o(.text)
+    _ll_ushift_r                             0x08003a4d   Thumb Code     0  llushr.o(.text)
+    __I$use$fp                               0x08003a6d   Thumb Code     0  iusefp.o(.text)
+    _double_round                            0x08003a6d   Thumb Code    30  depilogue.o(.text)
+    _double_epilogue                         0x08003a8b   Thumb Code   156  depilogue.o(.text)
+    __scatterload                            0x08003b29   Thumb Code    28  init.o(.text)
+    __scatterload_rt2                        0x08003b29   Thumb Code     0  init.o(.text)
+    __aeabi_llsl                             0x08003b4d   Thumb Code    30  llshl.o(.text)
+    _ll_shift_l                              0x08003b4d   Thumb Code     0  llshl.o(.text)
+    __decompress                             0x08003b6b   Thumb Code     0  __dclz77c.o(.text)
+    __decompress2                            0x08003b6b   Thumb Code    94  __dclz77c.o(.text)
+    __0printf$6                              0x08003bc9   Thumb Code    22  printf6.o(i.__0printf$6)
+    __1printf$6                              0x08003bc9   Thumb Code     0  printf6.o(i.__0printf$6)
+    __2printf                                0x08003bc9   Thumb Code     0  printf6.o(i.__0printf$6)
+    __scatterload_copy                       0x08003be9   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x08003bf7   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x08003bf9   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    Region$$Table$$Base                      0x08003f4c   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08003f6c   Number         0  anon$$obj.o(Region$$Table)
     SystemFrequency                          0x20000000   Data           4  system_stm32f10x_cl.o(.data)
     SystemFrequency_SysClk                   0x20000004   Data           4  system_stm32f10x_cl.o(.data)
     SystemFrequency_AHBClk                   0x20000008   Data           4  system_stm32f10x_cl.o(.data)
@@ -961,12 +960,12 @@ Image Symbol Table
     STAT                                     0x20001564   Data           4  main.o(.data)
     lcdLock                                  0x20001568   Data           4  main.o(.data)
     printQueue                               0x2000156c   Data           4  main.o(.data)
-    pxCurrentTCB                             0x2000158c   Data           4  tasks.o(.data)
-    __stdout                                 0x200015c8   Data           4  stdout.o(.data)
-    content                                  0x200015cc   Data         720  main.o(.bss)
-    headward                                 0x2000189c   Data         720  main.o(.bss)
-    tailward                                 0x20001b6c   Data         720  main.o(.bss)
-    __initial_sp                             0x2000fd08   Data           0  stm32f10x.o(STACK)
+    sprite_apple                             0x20001570   Data         512  main.o(.data)
+    pxCurrentTCB                             0x2000178c   Data           4  tasks.o(.data)
+    __stdout                                 0x200017c8   Data           4  stdout.o(.data)
+    content                                  0x200017cc   Data        1040  main.o(.bss)
+    tailward                                 0x20001bdc   Data        1040  main.o(.bss)
+    __initial_sp                             0x2000feb8   Data           0  stm32f10x.o(STACK)
 
 
 
@@ -976,9 +975,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x00005590, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00004780])
+  Load Region LR_1 (Base: 0x08000000, Size: 0x00005738, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00004768])
 
-    Execution Region ER_RO (Base: 0x08000000, Size: 0x00003fc4, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Base: 0x08000000, Size: 0x00003f6c, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1003,40 +1002,40 @@ Memory Map of the image
     0x08001894   0x000000b8   Code   RO          167    .text               misc.o
     0x0800194c   0x00000588   Code   RO          182    .text               glcd.o
     0x08001ed4   0x00000190   Code   RO          218    .text               setup.o
-    0x08002064   0x00000914   Code   RO          241    .text               main.o
-    0x08002978   0x000000f8   Code   RO          281    .text               heap_2.o
-    0x08002a70   0x0000008c   Code   RO          302    .text               list.o
-    0x08002afc   0x000000a0   Code   RO          315    .text               port.o
-    0x08002b9c   0x00000478   Code   RO          332    .text               queue.o
-    0x08003014   0x000008a8   Code   RO          350    .text               tasks.o
-    0x080038bc   0x00000024   Code   RO          375    .text               mc_w.l(rand.o)
-    0x080038e0   0x00000024   Code   RO          378    .text               mc_w.l(memcpya.o)
-    0x08003904   0x00000024   Code   RO          380    .text               mc_w.l(memseta.o)
-    0x08003928   0x00000018   Code   RO          382    .text               mc_w.l(strncpy.o)
-    0x08003940   0x000000e4   Code   RO          647    .text               mf_w.l(dmul.o)
-    0x08003a24   0x00000022   Code   RO          649    .text               mf_w.l(dflti.o)
-    0x08003a46   0x00000032   Code   RO          651    .text               mf_w.l(dfixui.o)
-    0x08003a78   0x0000002c   Code   RO          668    .text               mc_w.l(uidiv.o)
-    0x08003aa4   0x00000020   Code   RO          672    .text               mc_w.l(llushr.o)
-    0x08003ac4   0x00000000   Code   RO          674    .text               mc_w.l(iusefp.o)
-    0x08003ac4   0x000000ba   Code   RO          675    .text               mf_w.l(depilogue.o)
-    0x08003b7e   0x00000002   PAD
-    0x08003b80   0x00000024   Code   RO          685    .text               mc_w.l(init.o)
-    0x08003ba4   0x0000001e   Code   RO          687    .text               mc_w.l(llshl.o)
-    0x08003bc2   0x0000005e   Code   RO          699    .text               mc_w.l(__dclz77c.o)
-    0x08003c20   0x00000020   Code   RO          541    i.__0printf$6       mc_w.l(printf6.o)
-    0x08003c40   0x0000000e   Code   RO          693    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x08003c4e   0x00000002   Code   RO          694    i.__scatterload_null  mc_w.l(handlers.o)
-    0x08003c50   0x0000000e   Code   RO          695    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x08003c5e   0x00000002   PAD
-    0x08003c60   0x000002f0   Code   RO          548    i._printf_core      mc_w.l(printf6.o)
-    0x08003f50   0x00000024   Code   RO          549    i._printf_post_padding  mc_w.l(printf6.o)
-    0x08003f74   0x0000002e   Code   RO          550    i._printf_pre_padding  mc_w.l(printf6.o)
-    0x08003fa2   0x00000002   PAD
-    0x08003fa4   0x00000020   Data   RO          691    Region$$Table       anon$$obj.o
+    0x08002064   0x000008bc   Code   RO          241    .text               main.o
+    0x08002920   0x000000f8   Code   RO          281    .text               heap_2.o
+    0x08002a18   0x0000008c   Code   RO          302    .text               list.o
+    0x08002aa4   0x000000a0   Code   RO          315    .text               port.o
+    0x08002b44   0x00000478   Code   RO          332    .text               queue.o
+    0x08002fbc   0x000008a8   Code   RO          350    .text               tasks.o
+    0x08003864   0x00000024   Code   RO          375    .text               mc_w.l(rand.o)
+    0x08003888   0x00000024   Code   RO          378    .text               mc_w.l(memcpya.o)
+    0x080038ac   0x00000024   Code   RO          380    .text               mc_w.l(memseta.o)
+    0x080038d0   0x00000018   Code   RO          382    .text               mc_w.l(strncpy.o)
+    0x080038e8   0x000000e4   Code   RO          647    .text               mf_w.l(dmul.o)
+    0x080039cc   0x00000022   Code   RO          649    .text               mf_w.l(dflti.o)
+    0x080039ee   0x00000032   Code   RO          651    .text               mf_w.l(dfixui.o)
+    0x08003a20   0x0000002c   Code   RO          668    .text               mc_w.l(uidiv.o)
+    0x08003a4c   0x00000020   Code   RO          672    .text               mc_w.l(llushr.o)
+    0x08003a6c   0x00000000   Code   RO          674    .text               mc_w.l(iusefp.o)
+    0x08003a6c   0x000000ba   Code   RO          675    .text               mf_w.l(depilogue.o)
+    0x08003b26   0x00000002   PAD
+    0x08003b28   0x00000024   Code   RO          685    .text               mc_w.l(init.o)
+    0x08003b4c   0x0000001e   Code   RO          687    .text               mc_w.l(llshl.o)
+    0x08003b6a   0x0000005e   Code   RO          699    .text               mc_w.l(__dclz77c.o)
+    0x08003bc8   0x00000020   Code   RO          541    i.__0printf$6       mc_w.l(printf6.o)
+    0x08003be8   0x0000000e   Code   RO          693    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x08003bf6   0x00000002   Code   RO          694    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08003bf8   0x0000000e   Code   RO          695    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x08003c06   0x00000002   PAD
+    0x08003c08   0x000002f0   Code   RO          548    i._printf_core      mc_w.l(printf6.o)
+    0x08003ef8   0x00000024   Code   RO          549    i._printf_post_padding  mc_w.l(printf6.o)
+    0x08003f1c   0x0000002e   Code   RO          550    i._printf_pre_padding  mc_w.l(printf6.o)
+    0x08003f4a   0x00000002   PAD
+    0x08003f4c   0x00000020   Data   RO          691    Region$$Table       anon$$obj.o
 
 
-    Execution Region ER_RW (Base: 0x20000000, Size: 0x000015cc, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x000007bc])
+    Execution Region ER_RW (Base: 0x20000000, Size: 0x000017cc, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x000007fc])
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1045,23 +1044,23 @@ Memory Map of the image
     0x20000028   0x00000018   Data   RW           78    .data               stm3210c_eval_ioe.o
     0x20000040   0x00001506   Data   RW          183    .data               glcd.o
     0x20001546   0x00000002   PAD
-    0x20001548   0x00000028   Data   RW          249    .data               main.o
-    0x20001570   0x00000018   Data   RW          283    .data               heap_2.o
-    0x20001588   0x00000004   Data   RW          316    .data               port.o
-    0x2000158c   0x00000038   Data   RW          352    .data               tasks.o
-    0x200015c4   0x00000004   Data   RW          376    .data               mc_w.l(rand.o)
-    0x200015c8   0x00000004   Data   RW          667    .data               mc_w.l(stdout.o)
+    0x20001548   0x00000228   Data   RW          244    .data               main.o
+    0x20001770   0x00000018   Data   RW          283    .data               heap_2.o
+    0x20001788   0x00000004   Data   RW          316    .data               port.o
+    0x2000178c   0x00000038   Data   RW          352    .data               tasks.o
+    0x200017c4   0x00000004   Data   RW          376    .data               mc_w.l(rand.o)
+    0x200017c8   0x00000004   Data   RW          667    .data               mc_w.l(stdout.o)
 
 
-    Execution Region ER_ZI (Base: 0x200015cc, Size: 0x0000e73c, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Base: 0x200017cc, Size: 0x0000e6ec, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x200015cc   0x00000870   Zero   RW          242    .bss                main.o
-    0x20001e3c   0x00000004   PAD
-    0x20001e40   0x0000dc00   Zero   RW          282    .bss                heap_2.o
-    0x2000fa40   0x000000c8   Zero   RW          351    .bss                tasks.o
-    0x2000fb08   0x00000200   Zero   RW            1    STACK               stm32f10x.o
+    0x200017cc   0x00000820   Zero   RW          242    .bss                main.o
+    0x20001fec   0x00000004   PAD
+    0x20001ff0   0x0000dc00   Zero   RW          282    .bss                heap_2.o
+    0x2000fbf0   0x000000c8   Zero   RW          351    .bss                tasks.o
+    0x2000fcb8   0x00000200   Zero   RW            1    STACK               stm32f10x.o
 
 
 ==============================================================================
@@ -1074,7 +1073,7 @@ Image component sizes
       1416         70          0       5382          0       6614   glcd.o
        248         10          0         24      56320       5048   heap_2.o
        140          0          0          0          0       1881   list.o
-      2324        362          0         40       2160      13068   main.o
+      2236        270          0        552       2080      13181   main.o
        184         12          0          0          0       3741   misc.o
        296         24          0          4          0       2577   port.o
       1144          0          0          0          0       7759   queue.o
@@ -1089,7 +1088,7 @@ Image component sizes
       2216         40          0         56        200      13257   tasks.o
 
     ----------------------------------------------------------------------
-     14268        792        268       5572      59196     394380   Object Totals
+     14180        700        268       6084      59116     394493   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          0          0          0          2          4          0   (incl. Padding)
 
@@ -1144,15 +1143,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     16056        832        268       5580      59196     393304   Grand Totals
-     16056        832        268       1980      59196     393304   ELF Image Totals (compressed)
-     16056        832        268       1980          0          0   ROM Totals
+     15968        740        268       6092      59116     393417   Grand Totals
+     15968        740        268       2044      59116     393417   ELF Image Totals (compressed)
+     15968        740        268       2044          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                16324 (  15.94kB)
-    Total RW  Size (RW Data + ZI Data)             64776 (  63.26kB)
-    Total ROM Size (Code + RO Data + RW Data)      18304 (  17.88kB)
+    Total RO  Size (Code + RO Data)                16236 (  15.86kB)
+    Total RW  Size (RW Data + ZI Data)             65208 (  63.68kB)
+    Total ROM Size (Code + RO Data + RW Data)      18280 (  17.85kB)
 
 ==============================================================================
 

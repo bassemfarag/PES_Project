@@ -21,17 +21,18 @@
 
 //Global variables from board.
 volatile int content[MAX_X][MAX_Y];
-volatile int headward[MAX_X][MAX_Y];
+//volatile int headward[MAX_X][MAX_Y];
 volatile int tailward[MAX_X][MAX_Y];
 volatile int head;
 volatile int tail;
+volatile int tail2;
 volatile int apple;
 volatile int dir_x = 1, dir_y = 0;
 volatile int length;
 volatile int STAT;
 
 //Variables to manage the speed of the game
-volatile int WAIT = 150;
+volatile int WAIT = 300;
 const int timeStep = 10;
 
 //Functions to set directions of the snake movement.
@@ -48,12 +49,21 @@ int  setY(int coord, int y)                      {return getX(coord)*100 + y;}
 int  setXY(int x, int y)                         {return x*100+y;}
 int  getContent(int coord)                       {return content[getX(coord)][getY(coord)];}
 void setContent(int coord, char cont)            {content[getX(coord)][getY(coord)] = cont;}
-int  getHeadward(int coord)                      {return headward[getX(coord)][getY(coord)];}
-void setHeadward(int x, int y, int coord)        {headward[x][y] = coord;}
-void setHeadwardCoord(int atCoord, int toCoord)  {headward[getX(atCoord)][getY(atCoord)] = toCoord;}
+//int  getHeadward(int coord)                      {return headward[getX(coord)][getY(coord)];}
+//void setHeadward(int x, int y, int coord)        {headward[x][y] = coord;}
+//void setHeadwardCoord(int atCoord, int toCoord)  {headward[getX(atCoord)][getY(atCoord)] = toCoord;}
 int  getTailward(int coord)                      {return tailward[getX(coord)][getY(coord)];}
 void setTailward(int x, int y, int coord)        {tailward[x][y] = coord;}
 void setTailwardCoord(int atCoord, int toCoord)  {tailward[getX(atCoord)][getY(atCoord)] = toCoord;}
+int  getTailnew(int head){
+	int i;
+	int pos = head;
+	for (i = 0; i<length; i++){
+		pos = getTailward(pos);
+	}
+	return pos;
+}
+
 
 xSemaphoreHandle lcdLock;
 /*
@@ -90,37 +100,47 @@ extern void printCharXY(int x, int y, char c){
 }
 
 
-//void printSpriteXY(int x, int y, unsigned short * sprite) {
+void printSpriteXY(int x, int y, unsigned short * sprite) {
+	int i, j, k = 0;
 //	xSemaphoreTake(lcdLock, portMAX_DELAY);
 
-//	GLCD_bitmap(SCREEN_WIDTH - (SPRITE_DIM_X * (x+1)),
-//							y * SPRITE_DIM_Y,
-//							SPRITE_DIM_X,
-//							SPRITE_DIM_Y,
-//							sprite);
-//	
-//	xSemaphoreGive(lcdLock);
-//}
+	for (j=(y * SPRITE_DIM_Y); j<((y * SPRITE_DIM_Y) + SPRITE_DIM_Y);j++ ){
+		for (i=(x * SPRITE_DIM_X); i<((x * SPRITE_DIM_X) + SPRITE_DIM_X);i++ ){
+			GLCD_setTextColor(sprite[++k]);
+			GLCD_putPixel(j, SCREEN_WIDTH - i);
+			//vTaskDelay(5 / portTICK_RATE_MS);
+		}
+	}
+	GLCD_setTextColor(Black);
+	xSemaphoreGive(lcdLock);
+}
 
 void updateScreen(int coord){
-		
-//	switch (getContent(coord)) {
-//		case BODY  : 
-//				printSpriteXY(getX(coord), getY(coord), sprite_body);
-//				break;
-//		case TAIL  : 
-//				printSpriteXY(getX(coord), getY(coord), sprite_body);
-//				break;
-//		case HEAD  :
-//				printSpriteXY(getX(coord), getY(coord), sprite_head);
-//				break;
-//		case APPLE :
-//				printSpriteXY(getX(coord), getY(coord), sprite_apple);
-//				break;
-//		default    : 
-//				printSpriteXY(getX(coord), getY(coord), sprite_empty);
-//	}
-		printCharXY(getX(coord), getY(coord), getContent(coord));  
+	switch (getContent(coord)) {
+		case BODY  : 
+				//printSpriteXY(getX(coord), getY(coord), sprite_body);
+				printCharXY(getX(coord), getY(coord), getContent(coord));  
+				break;
+		case TAIL  : 
+				//printSpriteXY(getX(coord), getY(coord), sprite_body);
+				printCharXY(getX(coord), getY(coord), getContent(coord));  
+				break;
+		case HEAD  :
+				printCharXY(getX(coord), getY(coord), getContent(coord));  
+				//printSpriteXY(getX(coord), getY(coord), sprite_head);
+				break;
+		case APPLE :
+				//printCharXY(getX(coord), getY(coord), getContent(coord));  
+				printSpriteXY(getX(coord), getY(coord), sprite_apple);
+				//printf("(%2d, %2d)\n", getX(coord), getY(coord) );
+				break;
+		default    : 
+				//printSpriteXY(getX(coord), getY(coord), sprite_empty);
+				printCharXY(getX(coord), getY(coord), getContent(coord));  
+	}
+	
+
+//		printCharXY(getX(coord), getY(coord), getContent(coord));  
 
 //	if (getContent(coord)==APPLE)
 //		//printSpriteXY(getX(coord), getY(coord), sprite_apple);
@@ -130,9 +150,9 @@ void updateScreen(int coord){
 //	LED_out(1<<3);
 }
 
-static void ledOn(int led) {
-	LED_out(led);
-}
+//static void ledOn(int led) {
+//	LED_out(led);
+//}
 
 void clearScreen() {
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
@@ -149,15 +169,15 @@ static void initDisplay () {
 	xSemaphoreGive(lcdLock);
 }
 
-//static void ledTask(void *params) {
-//  unsigned short t = 0;
+static void ledTask(void *params) {
+  unsigned short t = 0;
 
-//  for (;;) {
-//	//	ledOn(1<<t);
-////		t = (t+1)%4;
-//	//  vTaskDelay(300 / portTICK_RATE_MS);
-//  }
-//}
+  for (;;) {
+		LED_out(1<<t);
+		t = (t+1)%4;
+	  vTaskDelay(100 / portTICK_RATE_MS);
+  }
+}
 
 //Status codes to show when exiting game.
 void exitGame(int stat) {
@@ -179,17 +199,11 @@ void exitGame(int stat) {
 //Print information about the board
 void printBoardPos(int pos) {
   //gotoxy(0, MAX_Y+2);
-  if (getTailward(pos) && getHeadward(pos))
-    printf("h(%2d,%2d) '%c':(%2d, %2d) t(%2d,%2d)\n", 
-	   getX(getHeadward(pos)), getY(getHeadward(pos)), getContent(pos), getX(pos), getY(pos), getX(getTailward(pos)), getY(getTailward(pos))); 
-  else if (getHeadward(pos))
-    printf("h(%2d,%2d) '%c':(%2d, %2d) t(--,--)\n", 
-	   getX(getHeadward(pos)), getY(getHeadward(pos)), getContent(pos), getX(pos), getY(pos));
-  else if (getTailward(pos))
-    printf("h(--,--) '%c':(%2d, %2d) t(%2d,%2d)\n", 
+	if (getTailward(pos))
+    printf("'%c':(%2d, %2d) t(%2d,%2d)\n", 
 	   getContent(pos), getX(pos), getY(pos),  getX(getTailward(pos)), getY(getTailward(pos)));
   else
-    printf("h(--,--) '%c':(%2d, %2d) t(--,--)\n", 
+    printf("'%c':(%2d, %2d) t(--,--)\n", 
 	   getContent(pos), getX(pos), getY(pos));
 }
 
@@ -211,7 +225,7 @@ void printBoard(){
 
 //Generate Apple and update the screen with new position
 void generateApple() {
-  int x, y; 
+  uint16_t x, y; 
 
   //If the board is full, i.e. there is no place left to continue.
   if (length >= MAX_X * MAX_Y)
@@ -224,10 +238,14 @@ void generateApple() {
     if (getContent(setXY(x,y)) == EMPTY)
       break;
   }
-  
+	
   //Update the variable with the new position
   apple = setXY(x,y);
   setContent(apple, APPLE);
+	
+	WAIT = WAIT - timeStep;
+	
+	printf("(%2d, %2d)\n", x, y);
   updateScreen(apple);
 }
 
@@ -239,7 +257,7 @@ void initiate() {
   for (i=0;i<MAX_Y;i++)
     for (j=0;j<MAX_X;j++){
       setContent(setXY(j,i), EMPTY);
-      setHeadward(j,i,0);
+      //setHeadward(j,i,0);
       setTailward(j,i,0);
     }
  
@@ -259,11 +277,11 @@ void initiate() {
   pos = tail;
   
   //Set the preceding pointers
-  do {
+  /*do {
     setHeadwardCoord(pos, setXY(i+1,0));
     pos = getHeadward(pos);
     i++;
-  } while (pos != head);
+  } while (pos != head);*/
   
   //Enter content;
   setContent(head, HEAD);
@@ -332,7 +350,7 @@ void tick(){
     case APPLE :
       length++;
       generateApple();     
-      setHeadwardCoord(headOld, head);
+      //setHeadwardCoord(headOld, head);
       setContent(headOld, BODY);
       setContent(head, HEAD);
       setTailwardCoord(head, headOld);
@@ -340,25 +358,26 @@ void tick(){
     case BODY  : exitGame(GAME_OVER);
     case TAIL  :
     case EMPTY :
-      tail = getHeadward(tail);
       setContent(tailOld, EMPTY);
-      setHeadwardCoord(tailOld, 0);
       setContent(headOld, BODY);
-      setHeadwardCoord(headOld, head);
-      setContent(tail, TAIL);
-      setTailwardCoord(tail, 0);
+      //setHeadwardCoord(tailOld, 0);
+      //setHeadwardCoord(headOld, head);
       setContent(head, HEAD);
       setTailwardCoord(head, headOld);
+      tail = getTailnew(head);
+      setContent(tail, TAIL);
+      setTailwardCoord(tail, 0);
       break;
     default    :
 			exitGame(__LINE__);	
 //			printBoardPos(head);
   }
-  updateScreen(headOld);
   updateScreen(head);
-	printBoardPos(head);
+  updateScreen(headOld);
+	//printBoardPos(head);
   updateScreen(tailOld);
   updateScreen(tail);
+	updateScreen(apple);
 }
 
 
@@ -377,7 +396,8 @@ void wait(int delayMS){
 }
 
 void autoMoveTask(void *params){
-	tick();
+	int i;
+
 	while(0){
 		if(!getX(head)) {
 			down();
@@ -395,6 +415,22 @@ void autoMoveTask(void *params){
 		tick();
 		wait(WAIT);
 	}
+
+	if (0){
+		for (i = 3; i<12; i++) {tick(); wait(WAIT/3);}
+		down();
+		for (i = 1; i<10; i++) {tick(); wait(WAIT/3);}
+		tick();
+		left();
+		tick();
+		up();
+		for (i = 0; i<6; i++) {tick(); wait(WAIT/1);}
+		left();
+		for (i = 0; i<5; i++) {tick(); wait(WAIT/1);}
+		down();
+		wait(WAIT*2);
+	}
+	
 	while(STAT == RUNNING){
 		tick();
 		//ledOn(1<<2);
@@ -408,34 +444,34 @@ void Joy_stick(void *params){
 	volatile JOY_State_TypeDef state;
 	
 	for(;;){
-	 state = JOY_NONE;
+	state = JOY_NONE;
 	state =  IOE_JoyStickGetState();
-	ledOn(0);
+	LED_out(0);
 	switch (state) {
 		case JOY_NONE:	
 			break;
 		case JOY_UP:
-			ledOn(8);	
+			LED_out(8);	
 			up();
 			//test_up();
 			break;
 		case JOY_DOWN:
-			ledOn(4);	
+			LED_out(4);	
 			down();
 		//	test_down();
 			break;
 		case JOY_LEFT:
-			ledOn(1);	
+			LED_out(1);	
 			left();
 		//	test_left();
 			break;
 		case JOY_RIGHT:
-			ledOn(2);	
+			LED_out(2);	
 			right();
 		//	test_right();
 			break;
 		case JOY_CENTER:
-			ledOn(15);	
+			LED_out(15);	
 			//test();
 			//tick();
 			break;
@@ -465,15 +501,15 @@ int main( void )
   initDisplay();
   initiate();
   
-	//TaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
+	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
   xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
   xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
-  xTaskCreate(autoMoveTask, "tick", 100, NULL, 1, NULL);
+  xTaskCreate(autoMoveTask, "tick", 100, NULL, 5, NULL);
   
 	//xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   //xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
-  printf("Setup complete ");  // this is redirected to the display
+  printf("%d/%d", MAX_X, MAX_Y);  // this is redirected to the display
 
   vTaskStartScheduler();
 
