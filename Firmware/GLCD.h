@@ -60,7 +60,9 @@
 #define Line9              216
 #define Horizontal     0x00
 #define Vertical       0x01
-
+#define WIDTH       320                 /* Screen Width (in pixels)           */
+#define HEIGHT      240  
+#define MARGIN    40
 /**
  * Currently, the coordinate system is a bit cumbersome:
  * the origin (0, 0) is in the upper right corner

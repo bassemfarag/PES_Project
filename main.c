@@ -16,7 +16,6 @@
 #include "GLCD.h"
 #include "stm3210c_eval_ioe.h"
 #include "defines.h"
-
 /*-----------------------------------------------------------*/
 
 //Global variables from board.
@@ -66,10 +65,18 @@ int  getTailnew(int head){
 
 
 xSemaphoreHandle lcdLock;
-/*
+
+void clearScreen() {
+	xSemaphoreTake(lcdLock, portMAX_DELAY);
+	GLCD_clear(White);
+	GLCD_setTextColor(Black);
+	xSemaphoreGive(lcdLock);
+}
+
 void test(){
 	clearScreen();
 }
+/*
 void test_left(){
 	xSemaphoreTake(lcdLock, portMAX_DELAY);
 	//GLCD_bitmap(100, 100, 16, 16, sprite_body);
@@ -154,12 +161,7 @@ void updateScreen(int coord){
 //	LED_out(led);
 //}
 
-void clearScreen() {
-	xSemaphoreTake(lcdLock, portMAX_DELAY);
-	GLCD_clear(White);
-	GLCD_setTextColor(Black);
-	xSemaphoreGive(lcdLock);
-}
+
 
 static void initDisplay () {
   /* LCD Module init */
@@ -187,8 +189,12 @@ void exitGame(int stat) {
   switch (stat) {
     case ERR       : printf("Some fatal error occurred"); break;
     case WIN       : printf("Congratulations! You won!"); break;
-    case GAME_OVER : printf("Uh oh! Game Over!");         break;
-    case COMPLETE  : printf("End of program.");           break;
+    case GAME_OVER :
+			vTaskDelay(50/portTICK_RATE_MS);
+			clearScreen();
+			GLCD_displayStringLn(Line4, "   Game Over!");       
+			break;
+		case COMPLETE  : printf("End of program.");           break;
     default        : printf("LINE");
   }
 	dir_x = 0;
@@ -309,8 +315,8 @@ void initiate() {
  * Display stdout on the display
  */
 
-xQueueHandle printQueue;
-
+//xQueueHandle printQueue;
+/*
 static void printTask(void *params) {
   unsigned char str[21] = "                    ";
   portTickType lastWakeTime = xTaskGetTickCount();
@@ -331,7 +337,7 @@ static void printTask(void *params) {
 	vTaskDelayUntil(&lastWakeTime, 100 / portTICK_RATE_MS);
   }
 }
-
+*/
 
 //Actual game logic for each step forward taken.
 void tick(){ 
@@ -390,7 +396,7 @@ void tick(){
 /* Retarget printing to the serial port 1 */
 int fputc(int ch, FILE *f) {
   unsigned char c = ch;
-  xQueueSend(printQueue, &c, 0);
+//  xQueueSend(printQueue, &c, 0);
   return ch;
 }
 
@@ -401,6 +407,82 @@ void wait(int delayMS){
 	vTaskDelay(delayMS / portTICK_RATE_MS);
 }
 
+
+
+typedef struct {
+  u16 lower, upper, left, right;
+  void *data;
+  void (*callback)(u16 x, u16 y, u16 pressure, void *data);
+} TSCallback;
+
+static TSCallback callbacks[5];
+static u8 callbackNum = 0;
+
+
+static void touchScreenTask(void *params) {
+  portTickType lastWakeTime = xTaskGetTickCount();
+  TS_STATE *ts_state;
+  u8 pressed = 0;
+  u8 i;
+
+  for (;;) {
+    ts_state = IOE_TS_GetState();
+  
+	if (pressed) {
+	  if (!ts_state->TouchDetected)
+	    pressed = 0;
+	} else if (ts_state->TouchDetected) {
+	/*  for (i = 0; i < callbackNum; ++i) {
+		if (callbacks[i].left  <= ts_state->X &&
+		    callbacks[i].right >= ts_state->X &&
+		    callbacks[i].lower >= ts_state->Y &&
+		    callbacks[i].upper <= ts_state->Y)
+		  callbacks[i].callback(ts_state->X, ts_state->Y, ts_state->Z,
+		                        callbacks[i].data);
+	  }		*/											
+	  pressed = 1;
+	}
+
+    if (ts_state->TouchDetected) {
+			//Move upwards
+			if((ts_state->Y >= 0) && (ts_state->Y <= SCREEN_HEIGHT/2) && 
+			(ts_state->X >= SCREEN_WIDTH/2 - MARGIN) && (ts_state->X <=SCREEN_WIDTH/2 + MARGIN) ){
+			   up();
+				LED_out(8);
+			 vTaskDelay(100);
+			}
+		//Move downwards
+		if((ts_state->Y > SCREEN_HEIGHT/2) && (ts_state->Y <= SCREEN_HEIGHT) && 
+			(ts_state->X >= SCREEN_WIDTH/2 - MARGIN) && (ts_state->X <= SCREEN_WIDTH/2 + MARGIN) ){
+				 down();	
+			//	LED_out(4);
+			//  vTaskDelay(100);
+			}
+				// Move Right
+		if((ts_state->Y >= 0) && (ts_state->Y <= SCREEN_HEIGHT && 
+			 (ts_state->X >= SCREEN_WIDTH/2 + MARGIN) && (ts_state->X <=SCREEN_WIDTH))){
+			   right();	
+			//	LED_out(2);
+			//  vTaskDelay(100);
+		}
+		// Move Left
+		if((ts_state->Y >= 0) && (ts_state->Y <= SCREEN_HEIGHT && (ts_state->X >=0) && (ts_state->X < SCREEN_WIDTH/2 - MARGIN) )){
+			  left();
+			//	LED_out(12);
+			//  vTaskDelay(100);
+		}
+			LED_out(0);
+			
+			
+	 // printf("x = %d, y= %d ", ts_state->X, ts_state->Y);
+	}
+
+	vTaskDelayUntil(&lastWakeTime, 100 / portTICK_RATE_MS);
+  }
+}
+	
+	
+	
 void autoMoveTask(void *params){
 	int i;
 
@@ -422,7 +504,7 @@ void autoMoveTask(void *params){
 		wait(WAIT);
 	}
 
-	if (0){
+	/*if (0){
 		for (i = 3; i<12; i++) {tick(); wait(WAIT/3);}
 		down();
 		for (i = 1; i<10; i++) {tick(); wait(WAIT/3);}
@@ -435,7 +517,7 @@ void autoMoveTask(void *params){
 		for (i = 0; i<5; i++) {tick(); wait(WAIT/1);}
 		down();
 		wait(WAIT*2);
-	}
+	}*/
 	
 	while(STAT == RUNNING){
 		tick();
@@ -446,6 +528,7 @@ void autoMoveTask(void *params){
 	
 	while (1) {;};
 }
+
 void Joy_stick(void *params){
 	
 	volatile JOY_State_TypeDef state;
@@ -467,7 +550,7 @@ void Joy_stick(void *params){
 			down();
 		//	test_down();
 			break;
-		case JOY_LEFT:
+		case JOY_LEFT: 
 			LED_out(1);	
 			left();
 		//	test_left();
@@ -479,7 +562,7 @@ void Joy_stick(void *params){
 			break;
 		case JOY_CENTER:
 			LED_out(15);	
-			//test();
+			test();
 			//tick();
 			break;
 
@@ -503,17 +586,16 @@ int main( void )
   prvSetupHardware();
   IOE_Config();
 
-  printQueue = xQueueCreate(128, 1);
+  //printQueue = xQueueCreate(128, 1);
 //	Joy_stick();
   initDisplay();
   initiate();
   
-	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
+//	xTaskCreate(ledTask, "lcd", 100, NULL, 1, NULL);
   //xTaskCreate(printTask, "print", 100, NULL, 1, NULL);
-  xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
-  xTaskCreate(autoMoveTask, "tick", 100, NULL, 5, NULL);
-  
-	//xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
+    xTaskCreate(Joy_stick, "joy", 100, NULL, 1, NULL);
+    xTaskCreate(autoMoveTask, "tick", 100, NULL, 1, NULL);
+    xTaskCreate(touchScreenTask, "touchScreen", 100, NULL, 1, NULL);
   //xTaskCreate(highlightButtonsTask, "highlighter", 100, NULL, 1, NULL);
 
   //printf("%d/%d", MAX_X, MAX_Y);  // this is redirected to the display
